@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cj8p7su0y356e"]
+
+[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/Prefabs/floor_tile.tscn" id="1_o5qli"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_2e8lr"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_2e8lr"]
+
+[node name="Node3D" type="Node3D" unique_id=1644208894]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=79509942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9591281, 2.5397892)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1283116166]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3895338, 1.2053716)
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=782957679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0939558, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1578132594]
+shape = SubResource("SphereShape3D_2e8lr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=1236414258]
+mesh = SubResource("SphereMesh_2e8lr")
+
+[node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("1_o5qli")]
