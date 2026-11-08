@@ -1,23 +1,12 @@
 [gd_scene format=3 uid="uid://cj8p7su0y356e"]
 
-[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_2e8lr"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_62yfg"]
+[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/floor_tile.tscn" id="1_ig7tw"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_2e8lr"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_2e8lr"]
 
 [node name="Node3D" type="Node3D" unique_id=1644208894]
-
-[node name="FloorTile" type="StaticBody3D" parent="." unique_id=2112254463]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="FloorTile" unique_id=996817498]
-shape = SubResource("HeightMapShape3D_2e8lr")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="FloorTile" unique_id=990031919]
-transform = Transform3D(0.49710613, 0, 0, 0, 1, 0, 0, 0, 0.49768513, 0, 0, 0)
-mesh = SubResource("PlaneMesh_62yfg")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=79509942]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9591281, 2.5397892)
@@ -33,3 +22,5 @@ shape = SubResource("SphereShape3D_2e8lr")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=1236414258]
 mesh = SubResource("SphereMesh_2e8lr")
+
+[node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("1_ig7tw")]
