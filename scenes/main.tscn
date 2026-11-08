@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cj8p7su0y356e"]
 
-[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/floor_tile.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/Prefabs/floor_tile.tscn" id="1_o5qli"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_2e8lr"]
 
@@ -23,4 +23,4 @@ shape = SubResource("SphereShape3D_2e8lr")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=1236414258]
 mesh = SubResource("SphereMesh_2e8lr")
 
-[node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("1_ig7tw")]
+[node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("1_o5qli")]
