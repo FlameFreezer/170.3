@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cdw0tjq72t5hr"]
+
+[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/Prefabs/floor_tile.tscn" id="1_bl13t"]
+[ext_resource type="PackedScene" uid="uid://bkx6w4rf3e4w0" path="res://scenes/Prefabs/PHCar.tscn" id="2_iyx0m"]
+
+[node name="Test" type="Node3D" unique_id=944797002]
+
+[node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("1_bl13t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.012495518, 0, 0.023491323)
+
+[node name="Node3D" parent="." unique_id=1020874637 instance=ExtResource("2_iyx0m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15497589, 0, 0.043004453)

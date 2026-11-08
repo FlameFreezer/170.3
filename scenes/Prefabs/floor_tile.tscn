@@ -10,5 +10,5 @@
 shape = SubResource("HeightMapShape3D_2e8lr")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1557458708]
-transform = Transform3D(0.49710613, 0, 0, 0, 1, 0, 0, 0, 0.49768513, 0, 0, 0)
+transform = Transform3D(2, 0, 0, 0, 4.024, 0, 0, 0, 2.004, 0, 0, 0)
 mesh = SubResource("PlaneMesh_62yfg")

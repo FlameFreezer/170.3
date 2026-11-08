@@ -3,23 +3,47 @@
 [ext_resource type="ArrayMesh" uid="uid://cqrgdna7whk3n" path="res://Assets/170_3_PH2_CarBody.obj" id="1_py02g"]
 [ext_resource type="ArrayMesh" uid="uid://85gi517fuxsg" path="res://Assets/170_3_PH_Tire.obj" id="2_8ty4o"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bl13t"]
+albedo_color = Color(0.5176471, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w70d6"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ixyv"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4pgxo"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ans2w"]
+albedo_color = Color(0, 0, 0, 1)
+
 [node name="Node3D" type="Node3D" unique_id=1020874637]
 
 [node name="1703Ph2CarBody" type="MeshInstance3D" parent="." unique_id=1837564033]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = ExtResource("1_py02g")
+surface_material_override/0 = SubResource("StandardMaterial3D_bl13t")
+surface_material_override/1 = SubResource("StandardMaterial3D_w70d6")
+surface_material_override/2 = SubResource("StandardMaterial3D_0ixyv")
+surface_material_override/3 = SubResource("StandardMaterial3D_4pgxo")
 
 [node name="1703PhTireFrontLeft" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=367701499]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.255, 0, -2.5)
 mesh = ExtResource("2_8ty4o")
+surface_material_override/0 = SubResource("StandardMaterial3D_ans2w")
 
 [node name="1703PhTireFrontRight" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=1727197525]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, -2.5)
 mesh = ExtResource("2_8ty4o")
+surface_material_override/0 = SubResource("StandardMaterial3D_ans2w")
 
 [node name="1703PhTireBackLeft" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=318854468]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.255, 0, 0)
 mesh = ExtResource("2_8ty4o")
+surface_material_override/0 = SubResource("StandardMaterial3D_ans2w")
 
 [node name="1703PhTireBackRight" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=846160020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, 0)
 mesh = ExtResource("2_8ty4o")
+surface_material_override/0 = SubResource("StandardMaterial3D_ans2w")
