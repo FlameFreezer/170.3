@@ -2,6 +2,9 @@
 
 [ext_resource type="ArrayMesh" uid="uid://cqrgdna7whk3n" path="res://Assets/170_3_PH2_CarBody.obj" id="1_py02g"]
 [ext_resource type="ArrayMesh" uid="uid://85gi517fuxsg" path="res://Assets/170_3_PH_Tire.obj" id="2_8ty4o"]
+[ext_resource type="Script" uid="uid://b81ee2f3iqrf1" path="res://Scripts/Car/transmission.gd" id="3_4pgxo"]
+[ext_resource type="Script" uid="uid://d3hu4iwtno64r" path="res://Scripts/Car/rear_wheels.gd" id="4_qecnx"]
+[ext_resource type="Script" uid="uid://dpjh5tmcxgx7n" path="res://Scripts/Car/engine.gd" id="5_np848"]
 
 [node name="Node3D" type="Node3D" unique_id=1020874637]
 
@@ -23,3 +26,14 @@ mesh = ExtResource("2_8ty4o")
 [node name="1703PhTireBackRight" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=846160020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, 0)
 mesh = ExtResource("2_8ty4o")
+
+[node name="Transmission" type="Node3D" parent="." unique_id=1158290373]
+process_priority = 1
+process_physics_priority = 1
+script = ExtResource("3_4pgxo")
+
+[node name="Rear Wheels" type="Node3D" parent="Transmission" unique_id=1642191833]
+script = ExtResource("4_qecnx")
+
+[node name="Engine" type="Node3D" parent="Transmission" unique_id=246385906]
+script = ExtResource("5_np848")
