@@ -26,13 +26,13 @@ var old_rpm: float
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	debug_throttlestate = true
-	old_rpm = 0.0
+	"""debug_throttlestate = true
+	old_rpm = 0.0"""
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if (debug_throttlestate):
+	"""if (debug_throttlestate):
 		_propose_new_rpm(1)
 		set_rpm(proposed_rpm)
 		if (_current_rpm >= redline_rpm - 10):
@@ -41,7 +41,7 @@ func _process(delta: float) -> void:
 		_propose_new_rpm(0)
 		set_rpm(proposed_rpm)
 		if (_current_rpm <= 10):
-			debug_throttlestate = true;
+			debug_throttlestate = true;"""
 
 
 func _propose_new_rpm(throttle_state: float) -> void:
@@ -56,7 +56,7 @@ func _propose_new_rpm(throttle_state: float) -> void:
 		rpm_to_propose = max(_current_rpm + _get_acceleration_value(false), target_rpm)
 	
 		
-	if (_current_rpm - old_rpm > 1000):
+	"""if (_current_rpm - old_rpm > 1000):
 		print_debug("_current_rpm: %f" % _current_rpm)
 		print_debug("acceleration value: %f" % _get_acceleration_value(true))
 		old_rpm = _current_rpm
@@ -64,7 +64,7 @@ func _propose_new_rpm(throttle_state: float) -> void:
 	if (old_rpm - _current_rpm > 1000):
 		print_debug("_current_rpm: %f" % _current_rpm)
 		print_debug("acceleration value: %f" % _get_acceleration_value(false))
-		old_rpm = _current_rpm
+		old_rpm = _current_rpm"""
 		
 	proposed_rpm = rpm_to_propose
 
