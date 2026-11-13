@@ -3,6 +3,7 @@ extends Node3D
 @export var gear_ratios: Array[float]
 @export var clutch_response_time: float
 var clutch_state: float = 0.0
+## Index into the gear ratios array
 var current_gear_ratio_index: int = 0
 
 # Called when the node enters the scene tree for the first time.
@@ -19,21 +20,33 @@ func _process(delta: float) -> void:
 		clutch_state = move_toward(clutch_state, 0.0, delta)
 	
 	## TODO: get these from the rear wheels and transmission
-	var engine_rev_state: float = 0.0
+	var engine_proposed_revs: float = 0.0
 	var rear_wheels_rev_state: float = 0.0
 	
 	if (clutch_state == 0.0):
 		## TODO: pass engine and rear wheels rev states back to them
 		pass
 	else:
-		_calculate_rev_states(engine_rev_state, rear_wheels_rev_state)
-		
-func _calculate_rev_states(engine_rev_state: float, rear_wheels_rev_state: float):
+		var ideal_revs := _calculate_revs(engine_proposed_revs, rear_wheels_rev_state)
+		const engine_revs: float = 1.0 ##TODO: grab from engine node
+		var clutch_factor := clutch_state / clutch_response_time
+		var engine_new_revs := lerpf(engine_revs, ideal_revs, clutch_factor)
+		var rear_wheels_new_revs := lerpf(rear_wheels_rev_state, ideal_revs * gear_ratios[current_gear_ratio_index], clutch_factor)
+		## TODO: pass energy response to rear wheels to change their rotation speed
+
+func kinetic_energy(velocity: float, mass: float) -> float:
+	return pow(velocity, 2) * mass / 2.0
+
+func _calculate_revs(engine_proposed_revs: float, rear_wheels_rev_state: float) -> float:
 	const engine_flywheel_weight: float = 1.0 ##TODO: grab from engine node
 	const rear_wheel_weight: float = 1.0 ##TODO: grab from rear wheels
-	var ke_engine: float = pow(engine_rev_state, 2) * 0.5 * engine_flywheel_weight
-	var ke_rear_wheels: float = pow(rear_wheels_rev_state, 2) * 0.5 * rear_wheel_weight
-	var ke_diff := ke_engine - ke_rear_wheels
-	var rev_difference: float = engine_rev_state - rear_wheels_rev_state
+	const engine_revs: float = 1.0 ##TODO: grab from engine node
+	var ke_engine_proposed := kinetic_energy(engine_proposed_revs, engine_flywheel_weight)
+	var ke_rear_wheels := kinetic_energy(rear_wheels_rev_state, rear_wheel_weight)
+	var ke_engine := kinetic_energy(engine_revs, engine_flywheel_weight)
+	var work_engine := ke_engine_proposed - ke_engine
+	var ke_system := ke_engine + ke_rear_wheels + work_engine
+	var weight_sum := engine_flywheel_weight + rear_wheel_weight * gear_ratios[current_gear_ratio_index]
 	
-	pass
+	var ideal_revs := sqrt(2.0 * ke_system / weight_sum)
+	return ideal_revs
