@@ -34,16 +34,14 @@ func _process(delta: float) -> void:
 		var rear_wheels_new_revs := lerpf(rear_wheels_rev_state, ideal_revs * gear_ratios[current_gear_ratio_index], clutch_factor)
 		## TODO: pass energy response to rear wheels to change their rotation speed
 
-func kinetic_energy(velocity: float, mass: float) -> float:
-	return pow(velocity, 2) * mass / 2.0
 
 func _calculate_revs(engine_proposed_revs: float, rear_wheels_rev_state: float) -> float:
 	const engine_flywheel_weight: float = 1.0 ##TODO: grab from engine node
 	const rear_wheel_weight: float = 1.0 ##TODO: grab from rear wheels
 	const engine_revs: float = 1.0 ##TODO: grab from engine node
-	var ke_engine_proposed := kinetic_energy(engine_proposed_revs, engine_flywheel_weight)
-	var ke_rear_wheels := kinetic_energy(rear_wheels_rev_state, rear_wheel_weight)
-	var ke_engine := kinetic_energy(engine_revs, engine_flywheel_weight)
+	var ke_engine_proposed := utils.kinetic_energy(engine_proposed_revs, engine_flywheel_weight)
+	var ke_rear_wheels := utils.kinetic_energy(rear_wheels_rev_state, rear_wheel_weight)
+	var ke_engine := utils.kinetic_energy(engine_revs, engine_flywheel_weight)
 	var work_engine := ke_engine_proposed - ke_engine
 	var ke_system := ke_engine + ke_rear_wheels + work_engine
 	var weight_sum := engine_flywheel_weight + rear_wheel_weight * gear_ratios[current_gear_ratio_index]

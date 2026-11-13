@@ -2,9 +2,9 @@
 
 [ext_resource type="ArrayMesh" uid="uid://cqrgdna7whk3n" path="res://Assets/170_3_PH2_CarBody.obj" id="1_py02g"]
 [ext_resource type="ArrayMesh" uid="uid://85gi517fuxsg" path="res://Assets/170_3_PH_Tire.obj" id="2_8ty4o"]
-[ext_resource type="Script" uid="uid://b81ee2f3iqrf1" path="res://scripts/Car/transmission.gd" id="3_4pgxo"]
-[ext_resource type="Script" uid="uid://d3hu4iwtno64r" path="res://scripts/Car/rear_wheels.gd" id="4_qecnx"]
-[ext_resource type="Script" uid="uid://dpjh5tmcxgx7n" path="res://scripts/Car/engine.gd" id="5_np848"]
+[ext_resource type="Script" uid="uid://b81ee2f3iqrf1" path="res://Scripts/Car/transmission.gd" id="3_4pgxo"]
+[ext_resource type="Script" uid="uid://d3hu4iwtno64r" path="res://Scripts/Car/rear_wheels.gd" id="4_qecnx"]
+[ext_resource type="Script" uid="uid://dpjh5tmcxgx7n" path="res://Scripts/Car/engine.gd" id="5_np848"]
 
 [node name="Node3D" type="Node3D" unique_id=1020874637]
 
@@ -37,3 +37,7 @@ script = ExtResource("4_qecnx")
 
 [node name="Engine" type="Node3D" parent="Transmission" unique_id=246385906]
 script = ExtResource("5_np848")
+redline_rpm = 9500.0
+_flywheel_weight_internal = 0.6
+flywheel_weight_external = 10.0
+_cylinder_volume = 0.5
