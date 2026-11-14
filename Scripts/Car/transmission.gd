@@ -6,6 +6,8 @@ var clutch_state: float = 0.0
 ## Index into the gear ratios array
 var current_gear_ratio_index: int = 0
 
+@onready var _motor: Motor = $Motor
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
