@@ -21,32 +21,34 @@ func _process(delta: float) -> void:
 	else:
 		clutch_state = move_toward(clutch_state, 0.0, delta)
 	
-	## TODO: get these from the rear wheels and transmission
-	var engine_proposed_revs: float = 0.0
-	var rear_wheels_rev_state: float = 0.0
+	var motor_proposed_rpm: float = _motor.proposed_rpm
+	## TODO: get this from rear wheels
+	var rear_wheels_rpm: float = 0.0
 	
 	if (clutch_state == 0.0):
-		## TODO: pass engine and rear wheels rev states back to them
-		pass
+		_motor.set_rpm(motor_proposed_rpm)
+		## TODO: maintain rear wheels rpm
 	else:
-		var ideal_revs := _calculate_revs(engine_proposed_revs, rear_wheels_rev_state)
-		const engine_revs: float = 1.0 ##TODO: grab from engine node
+		var ideal_rpm := _calculate_revs(motor_proposed_rpm, rear_wheels_rpm)
+		var motor_rpm: float = _motor.current_rpm
 		var clutch_factor := clutch_state / clutch_response_time
-		var engine_new_revs := lerpf(engine_revs, ideal_revs, clutch_factor)
-		var rear_wheels_new_revs := lerpf(rear_wheels_rev_state, ideal_revs * gear_ratios[current_gear_ratio_index], clutch_factor)
+		var motor_new_rpm := lerpf(motor_rpm, ideal_rpm, clutch_factor)
+		var rear_wheels_new_rpm := lerpf(rear_wheels_rpm, ideal_rpm * gear_ratios[current_gear_ratio_index], clutch_factor)
 		## TODO: pass energy response to rear wheels to change their rotation speed
+		_motor.set_rpm(motor_new_rpm)
 
 
-func _calculate_revs(engine_proposed_revs: float, rear_wheels_rev_state: float) -> float:
-	const engine_flywheel_weight: float = 1.0 ##TODO: grab from engine node
+func _calculate_revs(motor_proposed_rpm: float, rear_wheels_rpm: float) -> float:
 	const rear_wheel_weight: float = 1.0 ##TODO: grab from rear wheels
-	const engine_revs: float = 1.0 ##TODO: grab from engine node
-	var ke_engine_proposed := utils.kinetic_energy(engine_proposed_revs, engine_flywheel_weight)
-	var ke_rear_wheels := utils.kinetic_energy(rear_wheels_rev_state, rear_wheel_weight)
-	var ke_engine := utils.kinetic_energy(engine_revs, engine_flywheel_weight)
-	var work_engine := ke_engine_proposed - ke_engine
-	var ke_system := ke_engine + ke_rear_wheels + work_engine
-	var weight_sum := engine_flywheel_weight + rear_wheel_weight * gear_ratios[current_gear_ratio_index]
+	var motor_rpm: float = _motor.current_rpm
+	var motor_flywheel_weight: float = _motor.flywheel_weight_external
+	
+	var ke_motor_proposed := utils.kinetic_energy(motor_proposed_rpm, motor_flywheel_weight)
+	var ke_rear_wheels := utils.kinetic_energy(rear_wheels_rpm, rear_wheel_weight) * 2
+	var ke_motor := utils.kinetic_energy(motor_rpm, motor_flywheel_weight)
+	var work_motor := ke_motor_proposed - ke_motor
+	var ke_system := ke_motor + ke_rear_wheels + work_motor
+	var weight_sum := motor_flywheel_weight + rear_wheel_weight * gear_ratios[current_gear_ratio_index]
 	
 	var ideal_revs := sqrt(2.0 * ke_system / weight_sum)
 	return ideal_revs
