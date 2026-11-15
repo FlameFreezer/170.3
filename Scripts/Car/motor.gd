@@ -13,8 +13,8 @@ class_name Motor extends Node3D
 @export var _cylinder_volume: float
 
 # max number of rpms the engine is allowed to change by per second.
-var _max_acceleration: float
-var _max_deceleration: float
+@onready var _max_acceleration: float = redline_rpm * _cylinder_volume * 5
+@onready var _max_deceleration: float = redline_rpm * pow(1 - _flywheel_weight_internal, 2) * 5
 
 var current_rpm: float
 var proposed_rpm: float
@@ -45,8 +45,8 @@ func _process(delta: float) -> void:
 
 
 func _propose_new_rpm(throttle_state: float) -> void:
-	_max_acceleration = redline_rpm * _cylinder_volume * 5 # ask quincy what the non dumb way of doing this is. i know it has to exist
-	_max_deceleration = redline_rpm * pow(1 - _flywheel_weight_internal, 2) * 5
+	#_max_acceleration = redline_rpm * _cylinder_volume * 5 # ask quincy what the non dumb way of doing this is. i know it has to exist
+	#_max_deceleration = redline_rpm * pow(1 - _flywheel_weight_internal, 2) * 5
 	
 	var target_rpm: float = redline_rpm * throttle_state
 	var rpm_to_propose: float
