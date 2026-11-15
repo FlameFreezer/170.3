@@ -32,22 +32,20 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	"""if (debug_throttlestate):
-		_propose_new_rpm(1)
-		set_rpm(proposed_rpm)
-		if (_current_rpm >= redline_rpm - 10):
-			debug_throttlestate = false;
-	else:
-		_propose_new_rpm(0)
-		set_rpm(proposed_rpm)
-		if (_current_rpm <= 10):
-			debug_throttlestate = true;"""
+	if (Input.is_action_pressed("throttle")):
+		pass
+		#_propose_new_rpm(1)
+		#set_rpm(proposed_rpm)
+		#if (current_rpm >= redline_rpm - 10):
+			#debug_throttlestate = false
+	#else:
+		#_propose_new_rpm(0)
+		#set_rpm(proposed_rpm)
+		#if (current_rpm <= 10):
+			#debug_throttlestate = true
 
 
 func _propose_new_rpm(throttle_state: float) -> void:
-	#_max_acceleration = redline_rpm * _cylinder_volume * 5 # ask quincy what the non dumb way of doing this is. i know it has to exist
-	#_max_deceleration = redline_rpm * pow(1 - _flywheel_weight_internal, 2) * 5
-	
 	var target_rpm: float = redline_rpm * throttle_state
 	var rpm_to_propose: float
 	if (target_rpm > current_rpm):
@@ -56,15 +54,15 @@ func _propose_new_rpm(throttle_state: float) -> void:
 		rpm_to_propose = max(current_rpm + _get_acceleration_value(false), target_rpm)
 	
 		
-	"""if (_current_rpm - old_rpm > 1000):
-		print_debug("_current_rpm: %f" % _current_rpm)
-		print_debug("acceleration value: %f" % _get_acceleration_value(true))
-		old_rpm = _current_rpm
-	
-	if (old_rpm - _current_rpm > 1000):
-		print_debug("_current_rpm: %f" % _current_rpm)
-		print_debug("acceleration value: %f" % _get_acceleration_value(false))
-		old_rpm = _current_rpm"""
+	#if (current_rpm - old_rpm > 1000):
+		#print_debug("_current_rpm: %f" % current_rpm)
+		#print_debug("acceleration value: %f" % _get_acceleration_value(true))
+		#old_rpm = current_rpm
+	#
+	#if (old_rpm - current_rpm > 1000):
+		#print_debug("_current_rpm: %f" % current_rpm)
+		#print_debug("acceleration value: %f" % _get_acceleration_value(false))
+		#old_rpm = current_rpm
 		
 	proposed_rpm = rpm_to_propose
 
