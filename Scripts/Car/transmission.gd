@@ -1,4 +1,4 @@
-extends Node3D
+class_name Transmission extends Node3D
 
 @export var gear_ratios: Array[float]
 @export var clutch_response_time: float

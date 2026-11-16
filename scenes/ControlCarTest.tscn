@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://f60eyxmenhqe"]
+
+[ext_resource type="PackedScene" uid="uid://cvqgfv1f4mvm1" path="res://scenes/Prefabs/PHControllabelCar.tscn" id="1_rling"]
+
+[node name="ControlCarTest" type="Node3D" unique_id=1954701207]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=443055352]
+transform = Transform3D(1, 0, 0, 0, 0.87323093, 0.4873066, 0, -0.4873066, 0.87323093, 0, 2.5529737, 4.8613276)
+
+[node name="Car" parent="." unique_id=1020874637 instance=ExtResource("1_rling")]
+gravity_scale = 0.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=756413518]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.81693, 6.514984)
+light_energy = 12.706
+omni_range = 26.918

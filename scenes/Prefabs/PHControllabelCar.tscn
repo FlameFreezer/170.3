@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cvqgfv1f4mvm1"]
 
 [ext_resource type="ArrayMesh" uid="uid://cqrgdna7whk3n" path="res://Assets/170_3_PH2_CarBody.obj" id="1_hg8p6"]
+[ext_resource type="Script" uid="uid://b2rjx3ba1icw0" path="res://Scripts/Car/car.gd" id="1_mfhtg"]
 [ext_resource type="ArrayMesh" uid="uid://85gi517fuxsg" path="res://Assets/170_3_PH_Tire.obj" id="2_mfhtg"]
 [ext_resource type="Script" uid="uid://b81ee2f3iqrf1" path="res://Scripts/Car/transmission.gd" id="3_f32nv"]
 [ext_resource type="Script" uid="uid://d3hu4iwtno64r" path="res://Scripts/Car/rear_wheels.gd" id="4_j6i1t"]
@@ -9,7 +10,12 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_r6qtb"]
 size = Vector3(1.5, 1.5, 4.5)
 
-[node name="Node3D" type="Node3D" unique_id=1020874637]
+[node name="RigidBody3D" type="RigidBody3D" unique_id=573248676]
+script = ExtResource("1_mfhtg")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=102726455]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5857885, 0)
+shape = SubResource("BoxShape3D_r6qtb")
 
 [node name="1703Ph2CarBody" type="MeshInstance3D" parent="." unique_id=1837564033]
 mesh = ExtResource("1_hg8p6")
@@ -44,9 +50,3 @@ redline_rpm = 9500.0
 _flywheel_weight_internal = 0.6
 flywheel_weight_external = 10.0
 _cylinder_volume = 0.5
-
-[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=573248676]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=102726455]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5857885, 0)
-shape = SubResource("BoxShape3D_r6qtb")
