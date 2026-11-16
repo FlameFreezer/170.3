@@ -11,3 +11,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+# Called during _physics_process, allows safe reading and modification of physics state before its application
+func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
+	pass
