@@ -12,9 +12,18 @@ class_name FrontWheels extends Node3D
 
 
 
-@onready var _slip_threshold = 1 * static_friction
+@onready var _body: Car = $Car
 
-@onready var _kinetic_friction_force = 1 * kinetic_friction
+## max cornering force that can be applied by tires using static friction
+@onready var _static_friction_force: float = _body.mass * static_friction
+
+## max cornering force that can be applied by tires using kinetic friction
+@onready var _kinetic_friction_force: float = _body.mass * kinetic_friction
+
+var slipping: bool = false
+
+
+
 
 ## current angle of wheels relative to car, in radians
 var curr_wheel_angle: float
@@ -47,10 +56,15 @@ func get_force_output(car_motion: Vector2, car_direction: Vector2):
 	
 	# determine whether force demands cause wheels to slide or not, and create friction force vector
 	var out_force: Vector2
-	if (slip_force > _slip_threshold):
-		out_force = slip_motion.normalized() * -1 * _kinetic_friction_force
+	if (!slipping && slip_force > _static_friction_force):
+		slipping = true;
+	elif (slipping && slip_force < _kinetic_friction_force):
+		slipping = false;
+	
+	if (slipping):
+		out_force = slip_motion.normalized() * -1 * min(_kinetic_friction_force, slip_force)
 	else:
-		out_force = slip_motion * -1
+		out_force = slip_motion.normalized() * -1 * min(_static_friction_force, slip_force)
 	
 	# return friction force vector
 	return out_force
