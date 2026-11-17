@@ -20,7 +20,7 @@ class_name FrontWheels extends Node3D
 ## max cornering force that can be applied by tires using kinetic friction
 @onready var _kinetic_friction_force: float = _body.mass * kinetic_friction
 
-var slipping: bool = false
+@onready var slipping: bool = false
 
 
 
