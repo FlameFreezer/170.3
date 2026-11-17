@@ -51,7 +51,7 @@ func propose_rpm() -> float:
 ## called after current_rpm is finalized for the frame. outputs physics forces to car body.
 func get_force_output(car_velocity: Vector2, car_direction: Vector2) -> Vector2:
 	# determine ground speed of wheels from rpm
-	var proposed_wheel_translation: Vector2 = car_direction.normalized() * _radius * (current_rpm / 60) * (2 * PI)
+	var proposed_wheel_translation: Vector2 = car_direction.normalized() * _radius * (current_rpm / 60) * (2 * PI) * get_process_delta_time()
 	
 	# use previous car speed to determine acceleration force demand
 	var acceleration_vector: Vector2 = proposed_wheel_translation - car_velocity
