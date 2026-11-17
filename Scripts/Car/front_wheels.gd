@@ -44,7 +44,7 @@ func set_wheel_angle(steer_input: float):
 
 ## car_motion: proposed motion vector of the car this frame.
 ## car_direction: direction the car is facing this frame.
-func get_force_output(car_motion: Vector2, car_direction: Vector2):
+func get_force_output(car_motion: Vector2, car_direction: Vector2) -> Vector2:
 	
 	# determine direction of cornering force
 	var wheel_angle = car_direction.angle() + curr_wheel_angle
