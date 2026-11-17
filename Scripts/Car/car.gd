@@ -33,8 +33,9 @@ func _process(_delta: float) -> void:
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var s_linear_velocity := state.linear_velocity
 	s_linear_velocity.y = 0.0
+	if s_linear_velocity.length() == 0.0:
+		state.apply_force(state.transform.basis * Vector3.FORWARD * 0.25)
 	if throttle_state:
-		#print("Hi")
 		state.apply_force(state.transform.basis * Vector3.FORWARD * throttle_power)
 	else:
 		pass
@@ -45,5 +46,5 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	
 	if (s_linear_velocity.length() != 0.0):
 		steer_state = int(Input.is_action_pressed("steer right")) - int(Input.is_action_pressed("steer left"))
-		var steer_force := Vector3(15.0, 0.0, 0.0)
-		state.apply_force(steer_force * steer_state, Vector3(0.5 * steer_state, 0.0, -1.5))
+		var steer_force := Vector3(5.0, 0.0, 0.0)
+		state.apply_force(steer_force * steer_state, Vector3(0.5 * steer_state, 0.0, -2))
