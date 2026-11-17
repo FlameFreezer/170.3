@@ -1,17 +1,27 @@
 class_name RearWheel extends Node3D
 
-var STATIC_FRICTION : float = 100
-var DYNAMIC_FRICTION : float = 100
-var WEIGHT : int = 100
+@export var static_friction : float
+@export var kinetic_friction : float
+@export var mass : float
+@export var handbrake_strength: float
 
-var transmission : Node3D
-var wheel_rigid_body : RigidBody3D
+## transmission: interface with rpm determination system
+@onready var _transmission: Transmission = $Transmission
+## back left wheel: for animation
+@onready var _rigid_body_left: RigidBody3D = $RigidBody3D
+## back right wheel: for animation
+@onready var _rigid_body_right: RigidBody3D = $RigidBody3D
+## car body; interface with physics system
+@onready var _body: Car = $Car
 
-var proposed_rpm : float = 0.0
-var rpm: float = 0.0
+var _radius: float = 20 # ignore this for rpm determination
+var proposed_rpm : float
+var current_rpm: float
+var handbrake_state: float
 
 func update_wheel_angular_velocity(angular_velocity: Vector3) -> void:
-	wheel_rigid_body.angular_velocity = angular_velocity
+	_rigid_body_left.angular_velocity = angular_velocity
+	_rigid_body_right.angular_velocity = angular_velocity
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -19,9 +29,16 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	# Poll inputs for brakes
-	if Input.is_action_pressed("handbrake"):
-		proposed_rpm = 0.0
-	else:
-		pass
-		#proposed_rpm = wheel_rigid_body.angular_velocity
+	pass
+
+## input_value is in range [0, 1]; comes from the input system.
+func set_handbrake_state(input_value: float) -> void:
+	pass
+
+## called to give transmission the information it needs to determine current_rpm.
+func propose_rpm() -> float:
+	return 0
+
+## called after current_rpm is finalized for the frame. outputs physics forces to car body.
+func get_force_output() -> Vector2:
+	return Vector2(0, 0)
