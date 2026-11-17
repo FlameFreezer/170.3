@@ -41,11 +41,11 @@ func _process(_delta: float) -> void:
 
 ## input_value is in range [0, 1]; comes from the input system.
 func set_handbrake_state(input_value: float) -> void:
-	pass
+	handbrake_state = input_value
 
 ## called to give transmission the information it needs to determine current_rpm.
 func propose_rpm() -> float:
-	return 0
+	return current_rpm * handbrake_state
 
 ## car_velocity is car's movement vector from last frame. car_direction is car's direction vector from last frame.
 ## called after current_rpm is finalized for the frame. outputs physics forces to car body.
