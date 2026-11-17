@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://cvqgfv1f4mvm1"]
 
 [ext_resource type="ArrayMesh" uid="uid://cqrgdna7whk3n" path="res://Assets/170_3_PH2_CarBody.obj" id="1_hg8p6"]
-[ext_resource type="Script" uid="uid://b2rjx3ba1icw0" path="res://Scripts/Car/car.gd" id="1_mfhtg"]
+[ext_resource type="Script" uid="uid://b2rjx3ba1icw0" path="res://scripts/Car/car.gd" id="1_mfhtg"]
 [ext_resource type="ArrayMesh" uid="uid://85gi517fuxsg" path="res://Assets/170_3_PH_Tire.obj" id="2_mfhtg"]
-[ext_resource type="Script" uid="uid://b81ee2f3iqrf1" path="res://Scripts/Car/transmission.gd" id="3_f32nv"]
-[ext_resource type="Script" uid="uid://d3hu4iwtno64r" path="res://Scripts/Car/rear_wheels.gd" id="4_j6i1t"]
-[ext_resource type="Script" uid="uid://dpjh5tmcxgx7n" path="res://Scripts/Car/motor.gd" id="5_88mxp"]
+[ext_resource type="Script" uid="uid://b81ee2f3iqrf1" path="res://scripts/Car/transmission.gd" id="3_f32nv"]
+[ext_resource type="Script" uid="uid://d3hu4iwtno64r" path="res://scripts/Car/rear_wheels.gd" id="4_j6i1t"]
+[ext_resource type="Script" uid="uid://dpjh5tmcxgx7n" path="res://scripts/Car/motor.gd" id="5_88mxp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r6qtb"]
 size = Vector3(1.5, 1.5, 4.5)

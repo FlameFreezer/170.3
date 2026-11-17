@@ -2,13 +2,13 @@
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_2e8lr"]
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_62yfg"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_1a7xp"]
 
 [node name="FloorTile" type="StaticBody3D" unique_id=1666266216]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=370967155]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
 shape = SubResource("HeightMapShape3D_2e8lr")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1557458708]
-transform = Transform3D(0.49710613, 0, 0, 0, 1, 0, 0, 0, 0.49768513, 0, 0, 0)
-mesh = SubResource("PlaneMesh_62yfg")
+mesh = SubResource("PlaneMesh_1a7xp")
