@@ -9,8 +9,7 @@
 transform = Transform3D(1, 0, 0, 0, 0.999893, -0.01463005, 0, 0.01463005, 0.999893, 0, 4.5529737, 4.8613276)
 
 [node name="Car" parent="." unique_id=1020874637 instance=ExtResource("1_rling")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.699616, 0)
-wheel_radius = 1.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.69961596, 0)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=756413518]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 69.816925, 7.514984)
