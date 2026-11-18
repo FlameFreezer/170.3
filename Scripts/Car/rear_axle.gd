@@ -1,6 +1,6 @@
 class_name RearAxle
 
-# constants set by init()
+# constants set by _init()
 var max_static_friction: float # max force that the rear wheels can exert without slipping.
 var max_kinetic_friction: float # max force that the rear wheels can exert while slipping.
 var kinetic_friction_accel_factor: float # Proportion of kinetic friction that can be used by the rear wheels to accelerate.
@@ -60,6 +60,7 @@ func propose_rpm(delta: float) -> float:
 			proposed_rpm = min(proposed_rpm, 0)
 		return proposed_rpm
 
+## sets the final rpm of the rear wheels this frame.
 func set_true_rpm(in_rpm: float) -> void:
 	true_rpm = in_rpm
 
@@ -68,8 +69,8 @@ func set_true_rpm(in_rpm: float) -> void:
 
 # v---------- PHYSICS SECTION ----------v
 
-## car_velocity is car's movement vector from last frame. car_direction is car's direction vector from last frame.
-## called only AFTER true_rpm is updated. outputs physics forces to car body.
+## called only AFTER true_rpm is updated. car_velocity is car's movement vector from last frame.
+## car_direction is car's direction vector from last frame. outputs physics forces to car body.
 func get_force_output(car_velocity: Vector2, car_direction: Vector2, _delta: float) -> Vector2:
 	# determine ground speed of wheels from rpm
 	var proposed_wheel_translation: Vector2 = car_direction.normalized() * wheel_diameter * PI * (true_rpm / 60) * _delta
@@ -83,7 +84,7 @@ func get_force_output(car_velocity: Vector2, car_direction: Vector2, _delta: flo
 	var slip_motion: Vector2 = car_normal * car_velocity.dot(car_normal)
 	var slip_force: float = slip_motion.length() * chassis_mass
 	
-	# determine whether or not back wheels are sliding
+	# handle slip state changes
 	if (!slipping && acceleration_force + slip_force > max_static_friction):
 		slipping = true;
 	elif(slipping && acceleration_force + slip_force < max_kinetic_friction):

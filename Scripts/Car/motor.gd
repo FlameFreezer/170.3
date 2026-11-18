@@ -1,84 +1,85 @@
-class_name Motor extends Node3D
+class_name Motor
 
-## RPM. maximum speed the engine can reach under throttling.
-@export var redline_rpm: float
+# constants set by _init()
+var redline_rpm: float  # maximum RPM the motor can reach under throttle power.
+var flywheel_weight: float  # weight of the flywheel used by the transmission to send energy to the rear wheels.
+var cylinder_volume: float # constant multiple applied to the power output of the engine.
 
-## In range (0, 1). 0 is no mass, 1 is infinite mass. Weight of flywheel for use by internal scripts. Used to calculate the engine's spin-down speed.
-@export var _flywheel_weight_internal: float
-
-## Kilograms. Weight of flywheel for use by external scripts. Used to calculate how much kE the engine is storing.
-@export var flywheel_weight_external: float 
-
-## In range (0, 1). 0 is no volume, 1 is infinite volume. Total volume of engine's cylinders. Used to calculate engine's power output per combustion cycle.
-@export var _cylinder_volume: float
-
-# max number of rpms the engine is allowed to change by per second.
-@onready var _max_acceleration: float = redline_rpm * _cylinder_volume * 5
-@onready var _max_deceleration: float = redline_rpm * pow(1 - _flywheel_weight_internal, 2) * 5
-
-var current_rpm: float
-var proposed_rpm: float
+# updated every frame
+var true_rpm: float # engine's final speed at the end of each frame.
 
 # debug
-var debug_throttlestate: bool
-var old_rpm: float
+var last_print_time: float # for managing the gap between print statements
+var elapsed_time: float # for managing the gap between print statements
+var print_gap: float = 0.25 # time in seconds between debug print statements. change this if desired.
+var last_rpm: float # for monitoring spinup/spindown rates
 
+## initializes variables and constants at the start of a scene.
+func _init(in_redline_rpm: float, in_flywheel_weight: float, in_cylinder_volume: float, starting_rpm: float) -> void:
+	# set constants
+	redline_rpm = in_redline_rpm
+	flywheel_weight = in_flywheel_weight
+	cylinder_volume = in_cylinder_volume
+	# initialize variables
+	true_rpm = starting_rpm
+	# initialize debug variables
+	last_print_time = 0
+	last_rpm = starting_rpm
+	elapsed_time = 0
+	pass
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	"""debug_throttlestate = true
-	old_rpm = 0.0"""
+# ^---------- INITIALIZATION AND STORAGE SECTION ----------^
 
+# v---------- DRIVETRAIN SIMULATOR SECTION ----------v
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	if (Input.is_action_pressed("throttle")):
-		pass
-		#_propose_new_rpm(1)
-		#set_rpm(proposed_rpm)
-		#if (current_rpm >= redline_rpm - 10):
-			#debug_throttlestate = false
-	#else:
-		#_propose_new_rpm(0)
-		#set_rpm(proposed_rpm)
-		#if (current_rpm <= 10):
-			#debug_throttlestate = true
-
-
-func _propose_new_rpm(throttle_state: float) -> void:
+## convert throttle input into an acceleration value for the engine this frame.
+func propose_rpm(throttle_state: float, delta: float) -> float:
+	# convert throttle state to rpm
 	var target_rpm: float = redline_rpm * throttle_state
-	var rpm_to_propose: float
-	if (target_rpm > current_rpm):
-		rpm_to_propose = min(current_rpm + _get_acceleration_value(true), target_rpm)
-	else:
-		rpm_to_propose = max(current_rpm + _get_acceleration_value(false), target_rpm)
 	
-		
-	#if (current_rpm - old_rpm > 1000):
-		#print_debug("_current_rpm: %f" % current_rpm)
-		#print_debug("acceleration value: %f" % _get_acceleration_value(true))
-		#old_rpm = current_rpm
-	#
-	#if (old_rpm - current_rpm > 1000):
-		#print_debug("_current_rpm: %f" % current_rpm)
-		#print_debug("acceleration value: %f" % _get_acceleration_value(false))
-		#old_rpm = current_rpm
-		
-	proposed_rpm = rpm_to_propose
-
-
-func _get_acceleration_value(accelerating: bool) -> float:
-	if (accelerating):
-		var max_torque: float = redline_rpm * 0.75
-		var distance_from_max_torque: float = abs(max_torque - current_rpm) / max_torque
-		
-		var torque_factor = max(exp(distance_from_max_torque * -2), 1 - _flywheel_weight_internal)
-		
-		return _max_acceleration * torque_factor * get_process_delta_time()
+	# apply acceleration or deceleration to move toward rpm target
+	var rpm_to_propose: float
+	if (target_rpm > true_rpm):
+		rpm_to_propose = min(true_rpm + _calculate_acceleration_value() * delta, target_rpm)
 	else:
-		return _max_deceleration * get_process_delta_time() * -1
+		rpm_to_propose = max(true_rpm + _calculate_deceleration_value() * delta, target_rpm)
+	
+	# return resulting rpm value
+	return rpm_to_propose
 
+## mathematical function that defines the engine's spinup acceleration curve.
+func _calculate_acceleration_value() -> float:
+	# this acceleration formula is based off desmos experimentation to get a nice curve over the right domain and range.
+	# i know it is incomprehensible. place your faith in the mysterious engineer from days past who once worked on this.
+	# don't touch it.
+	var to_ret: float
+	to_ret = -0.35 * redline_rpm * pow(((true_rpm * -1) / (7 * redline_rpm) + 2.83), 3)
+	to_ret += 1.5 * redline_rpm * tan(PI * ((true_rpm * -1) / (18 * redline_rpm) + 0.13)) + (13 * redline_rpm)
+	
+	return to_ret
 
-## Only to be called by transmission.gd.
-func set_rpm(in_rpm: float) -> void:
-	current_rpm = in_rpm
+## mathematical function that defines the engine's spindown deceleration curve.
+func _calculate_deceleration_value() -> float:
+	# I'm just using a linear function for this for now. decel feel is a lot less precise than accel feel, so it should
+	#     be okay for now. Can be changed later if needed.
+	var to_ret: float
+	to_ret = redline_rpm / -2.5
+	
+	return to_ret
+
+## sets the final rpm of the motor this frame.
+func set_true_rpm(in_rpm: float) -> void:
+	true_rpm = in_rpm
+
+# ^---------- DRIVETRAIN SIMULATOR SECTION ----------^
+
+# v---------- DEBUG SECTION ----------v
+
+## should be called every frame if debug mode is active. prints engine rpm changes over time.
+func print_debug_values(delta: float) -> void:
+	if (elapsed_time - last_print_time > print_gap):
+		print_debug("motor.gd debug stats:\nmotor's current rpm: %f\nrpm change since last printout: %f" % [true_rpm, (true_rpm - last_rpm)])
+		last_print_time = elapsed_time
+		last_rpm = true_rpm
+	
+	elapsed_time += delta
