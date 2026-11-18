@@ -24,6 +24,8 @@ func _ready() -> void:
 @onready var front_wheels: FrontWheels
 @onready var rear_wheels: RearAxle
 
+@export var wheel_offset: float = 5 # How far away the wheels are from the chassis' center
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass
@@ -36,6 +38,7 @@ func _process(delta: float) -> void:
 	var rear_force = rear_wheels.get_force_output(current_velocity, current_direction, delta)
 	var front_force = front_wheels.get_force_output(current_velocity, current_direction)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	apply_force(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, front_wheel_offset))
 	apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
 =======
@@ -43,3 +46,7 @@ func _process(delta: float) -> void:
 	apply_force(Vector3(front_force.x, 0, front_force.y), front_wheel_local_position)
 	apply_force(Vector3(rear_force.x, 0, rear_force.y), front_wheel_local_position * Vector3(1, 1, -1))
 >>>>>>> d17ef3c (add chassis)
+=======
+	apply_force(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, wheel_offset))
+	apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, -wheel_offset))
+>>>>>>> 4efb0b9 (change chassis to keep track of where to apply forces of the wheels)
