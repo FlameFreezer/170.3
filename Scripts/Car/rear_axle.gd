@@ -9,6 +9,8 @@ var kinetic_friction_accel_factor: float # Proportion of kinetic friction that c
 #                                          A value of zero means that the rear wheels cannot accelerate the car while in a slide.
 #                                          A value of one means that the rear wheels cannot apply any cornering force while the car is in a slide.
 var chassis_mass: float # mass of the whole car.
+var front_axle_offset: float # distance from car's center of mass to the front axle.
+var rear_axle_offset: float # distance from the car's center of mass to the rear axle.
 var wheel_mass: float # wmass of the rear wheels.
 var wheel_diameter: float # diameter of the rear wheels.
 var drag_factor: float # In range [0, 1]. proportion of car's speed lost per second under no acceleration. A value of 0 means no drag.
@@ -21,10 +23,12 @@ var adjusted_wheel_mass: float # How much the transmission will be told the rear
 var slipping: bool # Whether or not the rear wheels are sliding.
 
 ## Initializes variables and constants at the start of a scene.
-func _init(in_chassis_mass: float, static_friction_coeff: float, kinetic_friction_coeff: float, in_kf_accel_factor: float, in_wheel_mass: float, in_wheel_diameter: float, in_drag_factor: float, in_handbrake_strength: float, starting_rpm: float) -> void:
+func _init(in_chassis_mass: float, in_front_axle_offset: float, in_rear_axle_offset: float, static_friction_coeff: float, kinetic_friction_coeff: float, in_kf_accel_factor: float, in_wheel_mass: float, in_wheel_diameter: float, in_drag_factor: float, in_handbrake_strength: float, starting_rpm: float) -> void:
 	max_static_friction = chassis_mass * static_friction_coeff
 	max_kinetic_friction = chassis_mass * kinetic_friction_coeff
 	chassis_mass = in_chassis_mass
+	front_axle_offset = in_front_axle_offset
+	rear_axle_offset = in_rear_axle_offset
 	wheel_mass = in_wheel_mass
 	wheel_diameter = in_wheel_diameter
 	kinetic_friction_accel_factor = in_kf_accel_factor
@@ -83,6 +87,9 @@ func get_force_output(car_velocity: Vector2, car_direction: Vector2, _delta: flo
 	var car_normal: Vector2 = Vector2(cos(car_direction.angle() + PI / 2), sin(car_direction.angle() + PI / 2))
 	var slip_motion: Vector2 = car_normal * car_velocity.dot(car_normal)
 	var slip_force: float = slip_motion.length() * chassis_mass
+	
+	# isolate the cornering force acting on the rear wheels
+	slip_force *= front_axle_offset / rear_axle_offset
 	
 	# handle slip state changes
 	if (!slipping && acceleration_force + slip_force > max_static_friction):

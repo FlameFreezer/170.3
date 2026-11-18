@@ -53,8 +53,8 @@ func _calculate_acceleration_value() -> float:
 	# i know it is incomprehensible. place your faith in the mysterious engineer from days past who once worked on this.
 	# don't touch it.
 	var to_ret: float
-	to_ret = -0.35 * redline_rpm * pow(((true_rpm * -1) / (7 * redline_rpm) + 2.83), 3)
-	to_ret += 1.5 * redline_rpm * tan(PI * ((true_rpm * -1) / (18 * redline_rpm) + 0.13)) + (13 * redline_rpm)
+	to_ret = -0.035 * redline_rpm * pow(((true_rpm * -1) / (0.7 * redline_rpm) + 2.83), 3)
+	to_ret += 0.15 * redline_rpm * tan(PI * ((true_rpm * -1) / (1.8 * redline_rpm) + 0.13)) + (1.3 * redline_rpm)
 	
 	return to_ret
 
