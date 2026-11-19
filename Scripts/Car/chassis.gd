@@ -1,5 +1,7 @@
 class_name Chassis extends RigidBody3D
 
+signal update_values(String)
+
 var front_axle: FrontWheels
 var rear_axle: RearAxle
 var motor: Motor
@@ -74,11 +76,10 @@ func _physics_process(delta: float) -> void:
 	var current_direction = utils.get_vector2(transform.basis * Vector3.FORWARD)
 	var rear_force = rear_axle.get_force_output(current_velocity, current_direction, delta)
 	var front_force = front_axle.get_force_output(current_velocity, current_direction, delta)
-	# printerr("_physics_process:\nmotor_proposed_rpm: %f\nrear_axle_proposed_rpm: %f\nmotor_true_rpm: %f\nrear_wheels_true_rpm: %f\nrear slipping: %f\nfront slipping: %f\nrear_force: %v\nfront_force: %v\nsteering_angle: %f\n" % [motor_proposed_rpm, rear_axle_proposed_rpm, motor.true_rpm, rear_axle.true_rpm, rear_axle.slipping as int, front_axle.slipping as int, rear_force, front_force, front_axle.wheel_angle])
+	var hud_string := "motor_proposed_rpm: %f\nrear_axle_proposed_rpm: %f\nmotor_true_rpm: %f\nrear_wheels_true_rpm: %f\nrear slipping: %f\nfront slipping: %f\nrear_force: %v\nfront_force: %v\nsteering_angle: %f\n" % [motor_proposed_rpm, rear_axle_proposed_rpm, motor.true_rpm, rear_axle.true_rpm, rear_axle.slipping as int, front_axle.slipping as int, rear_force, front_force, front_axle.wheel_angle]
+	update_values.emit(hud_string)
 	apply_force(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, front_wheel_offset))
 	apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
-	
-	# apply_force(Vector3(0, 0, -500), Vector3(0, 0, 0))
 
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var car_normal_vec: Vector3 = (state.transform.basis * Vector3.RIGHT).normalized()
