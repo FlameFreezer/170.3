@@ -4,8 +4,8 @@ class_name FrontWheels
 var max_static_friction: float ## max force that can be applied by the front wheels without slipping.
 var max_kinetic_friction: float ## max force that can be applied by the front wheels while slipping.
 var chassis_mass: float ## mass of the whole car.
-var front_axle_offset: float ## distance from car's center of mass to the front axle.
-var rear_axle_offset: float ## distance from the car's center of mass to the rear axle.
+var front_axle_distance_from_com: float ## distance from car's center of mass to the front axle.
+var rear_axle_distance_from_com: float ## distance from the car's center of mass to the rear axle.
 var max_steering_angle: float ## in range [0, 90). max angle the wheels can reach relative to the chassis when steering.
 
 # updated every frame
@@ -14,8 +14,8 @@ var slipping: bool ## whether or not the front wheels are currently slipping.
 
 func _init(in_chassis_mass: float, in_front_axle_offset: float, in_rear_axle_offset: float, static_friction_coeff: float, kinetic_friction_coeff: float, in_max_steering_angle: float, starting_steer_angle: float) -> void:
 	chassis_mass = in_chassis_mass
-	front_axle_offset = in_front_axle_offset
-	rear_axle_offset = in_rear_axle_offset
+	front_axle_distance_from_com = abs(in_front_axle_offset)
+	rear_axle_distance_from_com = abs(in_rear_axle_offset)
 	max_static_friction = in_chassis_mass * static_friction_coeff * 9.81
 	max_kinetic_friction = in_chassis_mass * kinetic_friction_coeff * 9.81
 	max_steering_angle = in_max_steering_angle
@@ -57,9 +57,12 @@ func get_force_output(car_motion: Vector2, car_direction: Vector2, delta: float)
 	
 	# decompose force demand into two vectors
 	var car_normal_vec: Vector2 = Vector2(cos(car_direction.angle() + PI / 2), sin(car_direction.angle() + PI / 2))
-	var cornering_motion: Vector2 = car_normal_vec * slip_motion.dot(car_normal_vec) * rear_axle_offset / front_axle_offset # component of wheel load coming from cornering inertia
+	
+	var cornering_motion: Vector2 = car_normal_vec * slip_motion.dot(car_normal_vec) # component of wheel load coming from cornering inertia
 	var cornering_distance: float = cornering_motion.length()
 	var cornering_demand: float = 2 * cornering_distance / pow(delta, 2)
+	cornering_demand /= 1 + front_axle_distance_from_com / rear_axle_distance_from_com # split cornering force between front and rear wheels
+	
 	var steering_motion: Vector2 = wheel_normal_vec * slip_motion.dot(car_direction) / car_direction.length() # component of wheel load coming from steering angle
 	var steering_distance: float = steering_motion.length()
 	var steering_demand: float = 2 * steering_distance / pow(delta, 2)
@@ -74,9 +77,9 @@ func get_force_output(car_motion: Vector2, car_direction: Vector2, delta: float)
 	
 	var cornering_output_vec: Vector2
 	if (slipping):
-		cornering_output_vec = cornering_motion.normalized() * -1 * rear_axle_offset / front_axle_offset * min(max_kinetic_friction - steering_demand, cornering_demand)
+		cornering_output_vec = cornering_motion.normalized() * -1 * min(max_kinetic_friction - steering_demand, cornering_demand)
 	else:
-		cornering_output_vec = cornering_motion.normalized() * -1 * rear_axle_offset / front_axle_offset * min(max_static_friction - steering_demand, cornering_demand)
+		cornering_output_vec = cornering_motion.normalized() * -1 * min(max_static_friction - steering_demand, cornering_demand)
 	
 	# return friction force vector
 	var return_vec: Vector2 = steering_output_vec + cornering_output_vec

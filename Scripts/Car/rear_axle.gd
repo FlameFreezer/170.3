@@ -9,8 +9,8 @@ var kinetic_friction_accel_factor: float ## Proportion of kinetic friction that 
 ##                                          A value of zero means that the rear wheels cannot accelerate the car while in a slide.
 ##                                          A value of one means that the rear wheels cannot apply any cornering force while the car is in a slide.
 var chassis_mass: float ## mass of the whole car.
-var front_axle_offset: float ## distance from car's center of mass to the front axle.
-var rear_axle_offset: float ## distance from the car's center of mass to the rear axle.
+var front_axle_distance_from_com: float ## distance from car's center of mass to the front axle.
+var rear_axle_distance_from_com: float ## distance from the car's center of mass to the rear axle.
 var wheel_mass: float ## wmass of the rear wheels.
 var wheel_diameter: float ## diameter of the rear wheels.
 var drag_factor: float ## In range [0, 1]. proportion of car's speed lost per second under no acceleration. A value of 0 means no drag.
@@ -27,8 +27,8 @@ func _init(in_chassis_mass: float, in_front_axle_offset: float, in_rear_axle_off
 	chassis_mass = in_chassis_mass
 	max_static_friction_force = in_chassis_mass * static_friction_coeff * 9.81
 	max_kinetic_friction_force = in_chassis_mass * kinetic_friction_coeff * 9.81
-	front_axle_offset = in_front_axle_offset
-	rear_axle_offset = in_rear_axle_offset
+	front_axle_distance_from_com = abs(in_front_axle_offset)
+	rear_axle_distance_from_com = abs(in_rear_axle_offset)
 	wheel_mass = in_wheel_mass
 	wheel_diameter = in_wheel_diameter
 	kinetic_friction_accel_factor = in_kf_accel_factor
@@ -91,7 +91,7 @@ func get_force_output(car_velocity: Vector2, car_direction: Vector2, delta: floa
 	var cornering_demand: float = 2 * slip_distance / pow(delta, 2)
 	
 	# isolate the cornering force acting on the rear wheels
-	cornering_demand *= front_axle_offset / rear_axle_offset
+	cornering_demand /= 1 + front_axle_distance_from_com / rear_axle_distance_from_com
 	
 	# handle slip state changes
 	if (!slipping && (acceleration_demand + cornering_demand) * chassis_mass > max_static_friction_force):

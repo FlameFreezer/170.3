@@ -11,9 +11,9 @@ var transmission: Transmission
 @export_category("Motor variables")
 @export var redline_rpm: float = 10000 # Based on my own car's redline, even if I never reached it while recording its noises
 @export var starting_rpm: float = 0
-@export var flywheel_weight: float = 6
-@export var cylinder_volume: float = 10
-@export var drag_factor: float = 0.2
+@export var flywheel_weight: float = 50
+@export var cylinder_volume: float = 1
+@export var drag_factor: float = 0.05
 
 @export_category("Transmission variables")
 @export var gear_ratios: Array[float] = [1.0/50, 1.0/25, 1.0/12.5, 1.0/6.25, 1.0/75, 1.0/3.125]
