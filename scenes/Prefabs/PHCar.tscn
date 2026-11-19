@@ -2,7 +2,7 @@
 
 [ext_resource type="ArrayMesh" uid="uid://cqrgdna7whk3n" path="res://Assets/170_3_PH2_CarBody.obj" id="1_py02g"]
 [ext_resource type="ArrayMesh" uid="uid://85gi517fuxsg" path="res://Assets/170_3_PH_Tire.obj" id="2_8ty4o"]
-[ext_resource type="Script" uid="uid://ch58kxdecqotd" path="res://scripts/Car/chassis.gd" id="2_w70d6"]
+[ext_resource type="Script" uid="uid://ch58kxdecqotd" path="res://Scripts/Car/chassis.gd" id="2_w70d6"]
 [ext_resource type="Script" uid="uid://nfmh3d52fr6m" path="res://scenes/hud_txt.gd" id="4_0ixyv"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w70d6"]
@@ -54,3 +54,9 @@ offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("4_0ixyv")
 car = NodePath("../..")
+
+[node name="1703RearAxlePos" type="Node3D" parent="." unique_id=1459796571]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)
+
+[node name="1703FrontAxlePos" type="Node3D" parent="." unique_id=1011277626]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
