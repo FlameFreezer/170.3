@@ -18,21 +18,21 @@ var transmission: Transmission
 @export var drag_factor: float = 0.05
 
 @export_category("Transmission variables")
-@export var gear_ratios: Array[float] = [1.0/50, 1.0/25, 1.0/12.5, 1.0/6.25, 1.0/75, 1.0/3.125]
-@export var starting_gear_ratio_index: int = 0
+@export var gear_ratios: Array[float] = [-1.0/50, 1.0/50, 1.0/25, 1.0/12.5, 1.0/6.25, 1.0/75, 1.0/3.125]
+@export var starting_gear_ratio_index: int = 1
 @export var clutch_response_time: float = 0.5 # In seconds
 
 # Wheel tuning variables
 @export_category("Steering Wheel variables")
-@export var front_wheel_offset: float = 1.5 # Z position of front wheels relative to center of chassis
-@export var front_wheels_static_friction: float = 2
-@export var front_wheels_kinetic_friction: float = 1.2
+@export var front_wheel_offset: float = -1.5 # Z position of front wheels relative to center of chassis
+@export var front_wheels_static_friction: float = 5
+@export var front_wheels_kinetic_friction: float = 2
 @export var max_steering_angle: float = 30
 
 @export_category("Drive Wheel variables")
-@export var rear_wheel_offset: float = -1.5 # Z position of rear wheels relative to center of chassis
-@export var rear_wheels_static_friction: float = 2
-@export var rear_wheels_kinetic_friction: float = 1.2
+@export var rear_wheel_offset: float = 1.5 # Z position of rear wheels relative to center of chassis
+@export var rear_wheels_static_friction: float = 5
+@export var rear_wheels_kinetic_friction: float = 2
 @export var kinetic_friction_acceleration_factor: float = 0.5
 @export var wheel_mass: float = 50 # In kilograms; roughly 3400lb
 @export var wheel_diameter: float = 0.5 # In meters
@@ -78,6 +78,7 @@ func _process(delta: float) -> void:
 ## Uses Godot's physics engine to apply forces calculated by our physics engine
 func _physics_process(delta: float) -> void:
 	var motor_proposed_rpm := motor.propose_rpm(throttle_input, delta)
+	rear_axle.update_handbrake(handbrake_input)
 	var rear_axle_proposed_rpm := rear_axle.propose_rpm(delta)
 	front_axle.set_wheel_angle(steering_input)
 	transmission.update_clutch_state(clutch_input, delta)

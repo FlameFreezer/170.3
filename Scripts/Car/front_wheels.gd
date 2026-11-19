@@ -57,24 +57,25 @@ func get_force_output(car_motion: Vector2, car_direction: Vector2, delta: float)
 	var slip_demand: float = 2 * slip_distance / pow(delta, 2)
 	
 	# set slip state
-	if (!slipping && slip_demand + adjusted_cornering_demand > max_static_friction):
+	if (!slipping && (slip_demand + adjusted_cornering_demand) * chassis_mass > max_static_friction):
 		slipping = true;
-	elif(slipping && slip_demand + adjusted_cornering_demand < max_kinetic_friction):
+	elif(slipping && (slip_demand + adjusted_cornering_demand) * chassis_mass < max_kinetic_friction):
 		slipping = false;
 	
 	# cap force outputs and build return vector
 	
-	var out_steering_force: Vector2
+	var out_steering_vec: Vector2
 	if (slipping):
-		out_steering_force = slip_motion.normalized() * -1 * min(slip_demand, max_kinetic_friction)
+		out_steering_vec = slip_motion.normalized() * -1 * min(slip_demand * chassis_mass, max_kinetic_friction)
 	else:
-		out_steering_force = slip_motion.normalized() * -1 * min(slip_demand, max_static_friction)
+		out_steering_vec = slip_motion.normalized() * -1 * min(slip_demand * chassis_mass, max_static_friction)
+	var out_steering_force: float = out_steering_vec.length()
 	
-	var out_cornering_force: Vector2
+	var out_cornering_vec: Vector2
 	if (slipping):
-		out_cornering_force = cornering_motion.normalized() * -1 * min(adjusted_cornering_demand, max_kinetic_friction - slip_demand)
+		out_cornering_vec = cornering_motion.normalized() * -1 * min(adjusted_cornering_demand * chassis_mass, max_kinetic_friction - out_steering_force)
 	else:
-		out_cornering_force = cornering_motion.normalized() * -1 * min(adjusted_cornering_demand, max_static_friction - slip_demand)
+		out_cornering_vec = cornering_motion.normalized() * -1 * min(adjusted_cornering_demand * chassis_mass, max_static_friction - out_steering_force)
 	
-	var return_vec: Vector2 = out_steering_force + out_cornering_force
+	var return_vec: Vector2 = out_steering_vec + out_cornering_vec
 	return return_vec

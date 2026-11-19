@@ -40,7 +40,7 @@ mesh = ExtResource("2_8ty4o")
 shape = SubResource("BoxShape3D_oajxw")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=952696114]
-transform = Transform3D(1, 0, 0, 0, 0.8967124, 0.44261363, 0, -0.44261363, 0.8967124, 0, 4.0441947, 5.3147154)
+transform = Transform3D(1, 0, 0, 0, 0.7606997, 0.64910406, 0, -0.64910406, 0.7606997, 0, 4.331213, 4.5360284)
 
 [node name="HUD" type="Control" parent="." unique_id=594348716]
 layout_mode = 3
