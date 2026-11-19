@@ -3,16 +3,26 @@
 [ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/Prefabs/floor_tile.tscn" id="1_4mfdp"]
 [ext_resource type="PackedScene" uid="uid://bkx6w4rf3e4w0" path="res://scenes/Prefabs/PHCar.tscn" id="2_ivdt8"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4mfdp"]
+friction = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_oajxw"]
+
 [node name="drive_test_chamber" type="Node3D" unique_id=776402177]
 
 [node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("1_4mfdp")]
 transform = Transform3D(128, 0, 0, 0, 128, 0, 0, 0, 128, 0.0028693676, 0, 0.004810095)
+physics_material_override = SubResource("PhysicsMaterial_4mfdp")
 
 [node name="PHCar" parent="." unique_id=1930104507 instance=ExtResource("2_ivdt8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5200164, 0, 0.48898888)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5200164, 1.4524031, 0.48898888)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=421569984]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.193104, 0)
 light_color = Color(1, 0.5058824, 1, 1)
 light_energy = 16.0
 omni_range = 100.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=58333088]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5.2575836, 1.9073486e-06, -23.027828)
+mesh = SubResource("BoxMesh_oajxw")

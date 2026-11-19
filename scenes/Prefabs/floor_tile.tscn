@@ -1,10 +1,14 @@
 [gd_scene format=3 uid="uid://ccvhph1gnwwti"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4mfdp"]
+friction = 0.0
+
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_2e8lr"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_62yfg"]
 
 [node name="FloorTile" type="StaticBody3D" unique_id=1666266216]
+physics_material_override = SubResource("PhysicsMaterial_4mfdp")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=370967155]
 shape = SubResource("HeightMapShape3D_2e8lr")

@@ -39,8 +39,8 @@ func transmit_energy(motor_proposed_rpm: float, rear_axle_proposed_rpm: float, m
 	if _clutch_state != 1.0:
 		var ideal_rpm := _get_ideal_rpm(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
 		## The percentage of force that the clutch is actually able to apply to the motor and rear axle
-		motor_new_rpm = lerpf(motor.true_rpm, ideal_rpm, _clutch_state)
-		rear_axle_new_rpm = lerpf(rear_axle.true_rpm, ideal_rpm * gear_ratios[current_gear_ratio_index], _clutch_state)
+		motor_new_rpm = lerpf(motor.true_rpm, ideal_rpm, 1.0 - _clutch_state)
+		rear_axle_new_rpm = lerpf(rear_axle.true_rpm, ideal_rpm * gear_ratios[current_gear_ratio_index], 1.0 - _clutch_state)
 	motor.set_true_rpm(motor_new_rpm)
 	rear_axle.set_true_rpm(rear_axle_new_rpm)
 

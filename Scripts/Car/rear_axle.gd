@@ -24,9 +24,9 @@ var slipping: bool ## Whether or not the rear wheels are sliding.
 
 ## Initializes variables and constants at the start of a scene.
 func _init(in_chassis_mass: float, in_front_axle_offset: float, in_rear_axle_offset: float, static_friction_coeff: float, kinetic_friction_coeff: float, in_kf_accel_factor: float, in_wheel_mass: float, in_wheel_diameter: float, in_drag_factor: float, in_handbrake_strength: float, starting_rpm: float) -> void:
-	max_static_friction = chassis_mass * static_friction_coeff
-	max_kinetic_friction = chassis_mass * kinetic_friction_coeff
 	chassis_mass = in_chassis_mass
+	max_static_friction = in_chassis_mass * static_friction_coeff
+	max_kinetic_friction = in_chassis_mass * kinetic_friction_coeff
 	front_axle_offset = in_front_axle_offset
 	rear_axle_offset = in_rear_axle_offset
 	wheel_mass = in_wheel_mass
@@ -78,10 +78,9 @@ func set_true_rpm(in_rpm: float) -> void:
 func get_force_output(car_velocity: Vector2, car_direction: Vector2, _delta: float) -> Vector2:
 	# determine ground speed of wheels from rpm
 	var proposed_wheel_translation: Vector2 = car_direction.normalized() * wheel_diameter * PI * (true_rpm / 60) * _delta
-	
 	# use previous car speed to determine acceleration force demand
-	var acceleration_vector: Vector2 = proposed_wheel_translation - car_velocity
-	var acceleration_force: float = acceleration_vector.length() * chassis_mass
+	var acceleration_demand_vec: Vector2 = proposed_wheel_translation - car_velocity
+	var acceleration_demand_force: float = acceleration_demand_vec.length() * chassis_mass
 	
 	# find slip angle and use it to determine cornering force demand
 	var car_normal: Vector2 = Vector2(cos(car_direction.angle() + PI / 2), sin(car_direction.angle() + PI / 2))
@@ -92,23 +91,23 @@ func get_force_output(car_velocity: Vector2, car_direction: Vector2, _delta: flo
 	slip_force *= front_axle_offset / rear_axle_offset
 	
 	# handle slip state changes
-	if (!slipping && acceleration_force + slip_force > max_static_friction):
+	if (!slipping && acceleration_demand_force + slip_force > max_static_friction):
 		slipping = true;
-	elif(slipping && acceleration_force + slip_force < max_kinetic_friction):
+	elif(slipping && acceleration_demand_force + slip_force < max_kinetic_friction):
 		slipping = false;
 	
 	# generate and return force vector
-	var accel_vec: Vector2 # acceleration force component
+	var acceleration_output_vec: Vector2 # acceleration force component
 	if (slipping):
-		accel_vec = acceleration_vector.normalized() * min(acceleration_force, max_kinetic_friction / kinetic_friction_accel_factor)
+		acceleration_output_vec = acceleration_demand_vec.normalized() * min(acceleration_demand_force, max_kinetic_friction * kinetic_friction_accel_factor)
 	else:
-		accel_vec = acceleration_vector.normalized() * min(acceleration_force, max_static_friction)
-	var accel_force: float = accel_vec.length() * chassis_mass
+		acceleration_output_vec = acceleration_demand_vec.normalized() * min(acceleration_demand_force, max_static_friction)
+	var acceleration_output_force: float = acceleration_output_vec.length()
 	
-	var cornering_vec: Vector2 # cornering force component
+	var cornering_output_vec: Vector2 # cornering force component
 	if (slipping):
-		cornering_vec = slip_motion.normalized() * -1 * min(slip_force, max_kinetic_friction / (1 - kinetic_friction_accel_factor))
+		cornering_output_vec = slip_motion.normalized() * -1 * min(slip_force, max_kinetic_friction * (1 - kinetic_friction_accel_factor))
 	else:
-		cornering_vec = slip_motion.normalized() * -1 * min(slip_force, max_static_friction - accel_force)
+		cornering_output_vec = slip_motion.normalized() * -1 * min(slip_force, max_static_friction - acceleration_output_force)
 	
-	return accel_vec + cornering_vec
+	return acceleration_output_vec + cornering_output_vec

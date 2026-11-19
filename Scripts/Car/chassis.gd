@@ -16,7 +16,7 @@ var transmission: Transmission
 @export var drag_factor: float = 0.2
 
 @export_category("Transmission variables")
-@export var gear_ratios: Array[float] = [1/500, 1/375, 1/200, 1/125, 1/75, 1/50]
+@export var gear_ratios: Array[float] = [1.0/500, 1.0/375, 1.0/200, 1.0/125, 1.0/75, 1.0/50]
 @export var starting_gear_ratio_index: int = 0
 @export var clutch_response_time: float = 0.5 # In seconds
 
@@ -55,11 +55,10 @@ func _process(delta: float) -> void:
 	handbrake_input = Input.is_action_pressed("handbrake") as int
 	steering_input = (Input.is_action_pressed("steer right") as int) - (Input.is_action_pressed("steer left") as int)
 	clutch_input = Input.is_action_pressed("clutch") as int
-	shifter_input = (Input.is_action_pressed("upshift") as int) - (Input.is_action_pressed("downshift") as int)
 
 ## Uses Godot's physics engine to apply forces calculated by our physics engine
 func _physics_process(delta: float) -> void:
-	printerr(throttle_input)
+	shifter_input = (Input.is_action_just_pressed("upshift") as int) - (Input.is_action_just_pressed("downshift") as int)
 	var motor_proposed_rpm := motor.propose_rpm(throttle_input, delta)
 	var rear_axle_proposed_rpm := rear_axle.propose_rpm(delta)
 	transmission.update_clutch_state(clutch_input, delta)
@@ -67,9 +66,11 @@ func _physics_process(delta: float) -> void:
 	
 	transmission.transmit_energy(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
 	
+	
 	var current_velocity = utils.get_vector2(linear_velocity)
 	var current_direction = utils.get_vector2(global_basis.z)
-	var rear_force = rear_axle.get_force_output(current_velocity, current_direction, delta)
-	var front_force = front_axle.get_force_output(current_velocity, current_direction)
+	var rear_force = rear_axle.get_force_output(current_velocity, current_direction, delta) * 1000.0
+	var front_force = front_axle.get_force_output(current_velocity, current_direction) * 1000.0
+	printerr("_physics_process:\nmotor_proposed_rpm: %f\nrear_axle_proposed_rpm: %f\nmotor_true_rpm: %f\nrear_wheels_true_rpm: %f\nrear_force: %v\n" % [motor_proposed_rpm, rear_axle_proposed_rpm, motor.true_rpm, rear_axle.true_rpm, rear_force])
 	apply_force(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, front_wheel_offset))
 	apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
