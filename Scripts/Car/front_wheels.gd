@@ -1,16 +1,16 @@
 class_name FrontWheels
 
 # constants set by _init()
-var max_static_friction: float # max force that can be applied by the front wheels without slipping.
-var max_kinetic_friction: float # max force that can be applied by the front wheels while slipping.
-var chassis_mass: float # mass of the whole car.
-var front_axle_offset: float # distance from car's center of mass to the front axle.
-var rear_axle_offset: float # distance from the car's center of mass to the rear axle.
-var max_steering_angle: float # in range [0, 90). max angle the wheels can reach relative to the chassis when steering.
+var max_static_friction: float ## max force that can be applied by the front wheels without slipping.
+var max_kinetic_friction: float ## max force that can be applied by the front wheels while slipping.
+var chassis_mass: float ## mass of the whole car.
+var front_axle_offset: float ## distance from car's center of mass to the front axle.
+var rear_axle_offset: float ## distance from the car's center of mass to the rear axle.
+var max_steering_angle: float ## in range [0, 90). max angle the wheels can reach relative to the chassis when steering.
 
 # updated every frame
-var wheel_angle: float # current angle of the front wheels relative to the chassis, in radians.
-var slipping: bool # whether or not the front wheels are currently slipping.
+var wheel_angle: float ## current angle of the front wheels relative to the chassis, in radians.
+var slipping: bool ## whether or not the front wheels are currently slipping.
 
 func _init(in_chassis_mass: float, in_front_axle_offset: float, in_rear_axle_offset: float, static_friction_coeff: float, kinetic_friction_coeff: float, in_max_steering_angle: float, starting_steer_angle: float) -> void:
 	chassis_mass = in_chassis_mass

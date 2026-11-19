@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://ttymonj8wi7b"]
+
+[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/Prefabs/floor_tile.tscn" id="1_4mfdp"]
+[ext_resource type="PackedScene" uid="uid://bkx6w4rf3e4w0" path="res://scenes/Prefabs/PHCar.tscn" id="2_ivdt8"]
+
+[node name="drive_test_chamber" type="Node3D" unique_id=776402177]
+
+[node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("1_4mfdp")]
+transform = Transform3D(128, 0, 0, 0, 128, 0, 0, 0, 128, 0.0028693676, 0, 0.004810095)
+
+[node name="PHCar" parent="." unique_id=1930104507 instance=ExtResource("2_ivdt8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5200164, 0, 0.48898888)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=421569984]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.193104, 0)
+light_color = Color(1, 0.5058824, 1, 1)
+light_energy = 16.0
+omni_range = 100.0

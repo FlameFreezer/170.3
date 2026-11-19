@@ -1,18 +1,18 @@
 class_name Motor
 
 # constants set by _init()
-var redline_rpm: float  # maximum RPM the motor can reach under throttle power.
-var flywheel_weight: float  # weight of the flywheel used by the transmission to send energy to the rear wheels.
-var cylinder_volume: float # constant multiple applied to the power output of the engine.
+var redline_rpm: float  ## maximum RPM the motor can reach under throttle power.
+var flywheel_weight: float  ## weight of the flywheel used by the transmission to send energy to the rear wheels.
+var cylinder_volume: float ## constant multiple applied to the power output of the engine.
 
 # updated every frame
-var true_rpm: float # engine's final speed at the end of each frame.
+var true_rpm: float ## engine's final speed at the end of each frame.
 
 # debug
-var last_print_time: float # for managing the gap between print statements
-var elapsed_time: float # for managing the gap between print statements
-var print_gap: float = 0.25 # time in seconds between debug print statements. change this if desired.
-var last_rpm: float # for monitoring spinup/spindown rates
+var last_print_time: float ## for managing the gap between print statements
+var elapsed_time: float ## for managing the gap between print statements
+var print_gap: float = 0.25 ## time in seconds between debug print statements. change this if desired.
+var debug_old_rpm: float ## for monitoring spinup/spindown rates
 
 ## initializes variables and constants at the start of a scene.
 func _init(in_redline_rpm: float, in_flywheel_weight: float, in_cylinder_volume: float, starting_rpm: float) -> void:
@@ -24,7 +24,7 @@ func _init(in_redline_rpm: float, in_flywheel_weight: float, in_cylinder_volume:
 	true_rpm = starting_rpm
 	# initialize debug variables
 	last_print_time = 0
-	last_rpm = starting_rpm
+	debug_old_rpm = starting_rpm
 	elapsed_time = 0
 	pass
 
@@ -56,6 +56,8 @@ func _calculate_acceleration_value() -> float:
 	to_ret = -0.035 * redline_rpm * pow(((true_rpm * -1) / (0.7 * redline_rpm) + 2.83), 3)
 	to_ret += 0.15 * redline_rpm * tan(PI * ((true_rpm * -1) / (1.8 * redline_rpm) + 0.13)) + (1.3 * redline_rpm)
 	
+	to_ret *= cylinder_volume
+	
 	return to_ret
 
 ## mathematical function that defines the engine's spindown deceleration curve.
@@ -78,8 +80,8 @@ func set_true_rpm(in_rpm: float) -> void:
 ## should be called every frame if debug mode is active. prints engine rpm changes over time.
 func print_debug_values(delta: float) -> void:
 	if (elapsed_time - last_print_time > print_gap):
-		print_debug("motor.gd debug stats:\nmotor's current rpm: %f\nrpm change since last printout: %f" % [true_rpm, (true_rpm - last_rpm)])
+		print_debug("motor.gd debug stats:\nmotor's current rpm: %f\nrpm change since last printout: %f" % [true_rpm, (true_rpm - debug_old_rpm)])
 		last_print_time = elapsed_time
-		last_rpm = true_rpm
+		debug_old_rpm = true_rpm
 	
 	elapsed_time += delta

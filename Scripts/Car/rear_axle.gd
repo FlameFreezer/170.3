@@ -1,26 +1,26 @@
 class_name RearAxle
 
 # constants set by _init()
-var max_static_friction: float # max force that the rear wheels can exert without slipping.
-var max_kinetic_friction: float # max force that the rear wheels can exert while slipping.
-var kinetic_friction_accel_factor: float # Proportion of kinetic friction that can be used by the rear wheels to accelerate.
-#                                          The rest of the available kinetic friction force is used to provide cornering force.
-#                                          In range [0, 1].
-#                                          A value of zero means that the rear wheels cannot accelerate the car while in a slide.
-#                                          A value of one means that the rear wheels cannot apply any cornering force while the car is in a slide.
-var chassis_mass: float # mass of the whole car.
-var front_axle_offset: float # distance from car's center of mass to the front axle.
-var rear_axle_offset: float # distance from the car's center of mass to the rear axle.
-var wheel_mass: float # wmass of the rear wheels.
-var wheel_diameter: float # diameter of the rear wheels.
-var drag_factor: float # In range [0, 1]. proportion of car's speed lost per second under no acceleration. A value of 0 means no drag.
-var handbrake_strength: float # how much the transmission favors the rear wheels over the engine when the handbrake is fully active.
+var max_static_friction: float ## max force that the rear wheels can exert without slipping.
+var max_kinetic_friction: float ## max force that the rear wheels can exert while slipping.
+var kinetic_friction_accel_factor: float ## Proportion of kinetic friction that can be used by the rear wheels to accelerate.
+##                                          The rest of the available kinetic friction force is used to provide cornering force.
+##                                          In range [0, 1].
+##                                          A value of zero means that the rear wheels cannot accelerate the car while in a slide.
+##                                          A value of one means that the rear wheels cannot apply any cornering force while the car is in a slide.
+var chassis_mass: float ## mass of the whole car.
+var front_axle_offset: float ## distance from car's center of mass to the front axle.
+var rear_axle_offset: float ## distance from the car's center of mass to the rear axle.
+var wheel_mass: float ## wmass of the rear wheels.
+var wheel_diameter: float ## diameter of the rear wheels.
+var drag_factor: float ## In range [0, 1]. proportion of car's speed lost per second under no acceleration. A value of 0 means no drag.
+var handbrake_strength: float ## how much the transmission favors the rear wheels over the engine when the handbrake is fully active.
 
 # updated every frame
-var true_rpm: float # rear wheels' final RPM value at the end of each frame.
-var handbrake_state: float # in range [0, 1]. How much the handbrake is engaged. A value of 0 means the handbrake is not applied.
-var adjusted_wheel_mass: float # How much the transmission will be told the rear wheels weigh, based on actual rear wheel weight and handbrake state.
-var slipping: bool # Whether or not the rear wheels are sliding.
+var true_rpm: float ## rear wheels' final RPM value at the end of each frame.
+var handbrake_state: float ## in range [0, 1]. How much the handbrake is engaged. A value of 0 means the handbrake is not applied.
+var adjusted_wheel_mass: float ## How much the transmission will be told the rear wheels weigh, based on actual rear wheel weight and handbrake state.
+var slipping: bool ## Whether or not the rear wheels are sliding.
 
 ## Initializes variables and constants at the start of a scene.
 func _init(in_chassis_mass: float, in_front_axle_offset: float, in_rear_axle_offset: float, static_friction_coeff: float, kinetic_friction_coeff: float, in_kf_accel_factor: float, in_wheel_mass: float, in_wheel_diameter: float, in_drag_factor: float, in_handbrake_strength: float, starting_rpm: float) -> void:
