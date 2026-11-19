@@ -18,8 +18,8 @@ var transmission: Transmission
 @export var drag_factor: float = 0.05
 
 @export_category("Transmission variables")
-@export var gear_ratios: Array[float] = [-1.0/50, 1.0/50, 1.0/25, 1.0/12.5, 1.0/6.25, 1.0/75, 1.0/3.125]
-@export var starting_gear_ratio_index: int = 1
+@export var gear_ratios: Array[float] = [1.0/50, 1.0/25, 1.0/12.5, 1.0/6.25, 1.0/75, 1.0/3.125]
+@export var starting_gear_ratio_index: int = 0
 @export var clutch_response_time: float = 0.5 # In seconds
 
 # Wheel tuning variables
@@ -86,14 +86,20 @@ func _physics_process(delta: float) -> void:
 	shifter_input = 0
 	
 	transmission.transmit_energy(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
-	
-	
 	var front_axle_velocity = utils.get_vector2(front_axle_pos.global_position - front_axle_last_position)
 	var rear_axle_velocity = utils.get_vector2(rear_axle_pos.global_position - rear_axle_last_position)
-	var current_direction = utils.get_vector2(transform.basis * Vector3.FORWARD)
-	var rear_force = rear_axle.get_force_output(rear_axle_velocity, current_direction, delta)
-	var front_force = front_axle.get_force_output(front_axle_velocity, current_direction, delta)
-	var hud_string := "motor_proposed_rpm: %f\nrear_axle_proposed_rpm: %f\nmotor_true_rpm: %f\nrear_wheels_true_rpm: %f\nrear slipping: %f\nfront slipping: %f\nrear_force: %v\nfront_force: %v\nsteering_angle: %f\n" % [motor_proposed_rpm, rear_axle_proposed_rpm, motor.true_rpm, rear_axle.true_rpm, rear_axle.slipping as int, front_axle.slipping as int, rear_force, front_force, front_axle.wheel_angle]
+	if (front_axle_velocity.length() < 0.002):
+		front_axle_velocity = Vector2(snappedf(front_axle_velocity.x, 0.001), snappedf(front_axle_velocity.y, 0.001))
+	if (rear_axle_velocity.length() < 0.002):
+		rear_axle_velocity = Vector2(snappedf(rear_axle_velocity.x, 0.001), snappedf(rear_axle_velocity.y, 0.001))
+	var current_direction = utils.get_vector2(global_transform.basis * Vector3.FORWARD)
+	var rear_force: Vector2 = rear_axle.get_force_output(rear_axle_velocity, current_direction, delta)
+	var front_force: Vector2 = front_axle.get_force_output(front_axle_velocity, current_direction, delta)
+	if (rear_force.length() < 0.002):
+		rear_force = Vector2(snappedf(rear_force.x, 0.001), snappedf(rear_force.y, 0.001))
+	if (front_force.length() < 0.002):
+		front_force = Vector2(snappedf(front_force.x, 0.001), snappedf(front_force.y, 0.001))
+	var hud_string := "motor_proposed_rpm: %f\nrear_axle_proposed_rpm: %f\nmotor_true_rpm: %f\nrear_wheels_true_rpm: %f\nrear slipping: %f\nfront slipping: %f\nrear_force: %v\nfront_force: %v\nsteering_angle: %f\ncar_direction: %v\nfront_axle_velocity: %v\nrear_axle_velocity: %v" % [motor_proposed_rpm, rear_axle_proposed_rpm, motor.true_rpm, rear_axle.true_rpm, rear_axle.slipping as int, front_axle.slipping as int, rear_force, front_force, front_axle.wheel_angle, current_direction, front_axle_velocity, rear_axle_velocity]
 	update_values.emit(hud_string)
 	apply_force(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, front_wheel_offset))
 	apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
@@ -105,7 +111,7 @@ func _physics_process(delta: float) -> void:
 
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var car_normal_vec: Vector3 = (state.transform.basis * Vector3.RIGHT).normalized()
-	if (state.linear_velocity.dot(car_normal_vec) < 0.0001):
+	if (state.linear_velocity.dot(car_normal_vec) < 0.001):
 		state.linear_velocity -= car_normal_vec * state.linear_velocity.dot(car_normal_vec)
-	if (state.angular_velocity.y < 0.0001):
+	if (state.angular_velocity.y < 0.001):
 		state.angular_velocity.y = 0

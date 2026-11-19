@@ -41,25 +41,25 @@ func set_wheel_angle(steer_input: float):
 func get_force_output(car_motion: Vector2, car_direction: Vector2, delta: float) -> Vector2:
 	
 	# determine wheel angle in global space
-	var global_wheel_angle: float = car_direction.angle() + wheel_angle
+	var global_wheel_angle: float = car_direction.angle() + deg_to_rad(wheel_angle)
 	var car_normal_vec: Vector2 = Vector2(cos(car_direction.angle() - PI / 2), sin(car_direction.angle() - PI / 2))
 	var wheel_normal_vec: Vector2 = Vector2(cos(global_wheel_angle - PI / 2), sin(global_wheel_angle - PI / 2)) # this will point to the right at steering angle 0
 	
 	# find cornering force demand
-	var cornering_motion: Vector2 = car_normal_vec * car_normal_vec.dot(car_motion)
+	var cornering_motion: Vector2 = car_normal_vec * car_normal_vec.dot(car_motion * delta)
 	var cornering_distance: float = cornering_motion.length()
 	var adjusted_cornering_demand: float = 2 * cornering_distance / pow(delta, 2)
 	adjusted_cornering_demand /= 1 + front_axle_distance_from_com / rear_axle_distance_from_com
 	
 	# find steering force demand
-	var slip_motion: Vector2 = wheel_normal_vec * (car_motion - cornering_motion).dot(wheel_normal_vec)
+	var slip_motion: Vector2 = wheel_normal_vec * (car_motion * delta).dot(wheel_normal_vec)
 	var slip_distance: float = slip_motion.length()
 	var slip_demand: float = 2 * slip_distance / pow(delta, 2)
 	
 	# set slip state
-	if (!slipping && (slip_demand + adjusted_cornering_demand) * chassis_mass > max_static_friction):
+	if (!slipping && (slip_demand) * chassis_mass > max_static_friction):
 		slipping = true;
-	elif(slipping && (slip_demand + adjusted_cornering_demand) * chassis_mass < max_kinetic_friction):
+	elif(slipping && (slip_demand) * chassis_mass < max_kinetic_friction):
 		slipping = false;
 	
 	# cap force outputs and build return vector
