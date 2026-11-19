@@ -12,11 +12,11 @@ var transmission: Transmission
 @export var redline_rpm: float = 10000 # Based on my own car's redline, even if I never reached it while recording its noises
 @export var starting_rpm: float = 0
 @export var flywheel_weight: float = 6
-@export var cylinder_volume: float = 1
+@export var cylinder_volume: float = 10
 @export var drag_factor: float = 0.2
 
 @export_category("Transmission variables")
-@export var gear_ratios: Array[float] = [1.0/500, 1.0/375, 1.0/200, 1.0/125, 1.0/75, 1.0/50]
+@export var gear_ratios: Array[float] = [1.0/50, 1.0/25, 1.0/12.5, 1.0/6.25, 1.0/75, 1.0/3.125]
 @export var starting_gear_ratio_index: int = 0
 @export var clutch_response_time: float = 0.5 # In seconds
 
@@ -54,24 +54,26 @@ func _process(delta: float) -> void:
 	throttle_input = Input.is_action_pressed("throttle") as int
 	handbrake_input = Input.is_action_pressed("handbrake") as int
 	steering_input = (Input.is_action_pressed("steer right") as int) - (Input.is_action_pressed("steer left") as int)
+	if (shifter_input == 0):
+		shifter_input = (Input.is_action_just_pressed("upshift") as int) - (Input.is_action_just_pressed("downshift") as int)
 	clutch_input = Input.is_action_pressed("clutch") as int
 
 ## Uses Godot's physics engine to apply forces calculated by our physics engine
 func _physics_process(delta: float) -> void:
-	shifter_input = (Input.is_action_just_pressed("upshift") as int) - (Input.is_action_just_pressed("downshift") as int)
 	var motor_proposed_rpm := motor.propose_rpm(throttle_input, delta)
 	var rear_axle_proposed_rpm := rear_axle.propose_rpm(delta)
 	transmission.update_clutch_state(clutch_input, delta)
 	transmission.update_gear(shifter_input)
+	shifter_input = 0
 	
 	transmission.transmit_energy(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
 	
 	
 	var current_velocity = utils.get_vector2(linear_velocity)
-	var current_direction = utils.get_vector2(global_basis.z)
-	var rear_force = rear_axle.get_force_output(current_velocity, current_direction, delta) * 1000.0
-	var front_force = front_axle.get_force_output(current_velocity, current_direction) * 1000.0
+	var current_direction = utils.get_vector2(transform.basis * Vector3.FORWARD)
+	var rear_force = rear_axle.get_force_output(current_velocity, current_direction, delta)
+	var front_force = front_axle.get_force_output(current_velocity, current_direction)
 	printerr("_physics_process:\nmotor_proposed_rpm: %f\nrear_axle_proposed_rpm: %f\nmotor_true_rpm: %f\nrear_wheels_true_rpm: %f\nslipping: %f\nrear_force: %v\n" % [motor_proposed_rpm, rear_axle_proposed_rpm, motor.true_rpm, rear_axle.true_rpm, rear_axle.slipping as int, rear_force])
 	# apply_force(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, front_wheel_offset))
-	# apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
-	apply_force(Vector3(0, 0, -500), Vector3(0, 0, 0))
+	apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
+	# apply_force(Vector3(0, 0, -500), Vector3(0, 0, 0))

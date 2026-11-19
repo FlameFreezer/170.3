@@ -112,9 +112,6 @@ func get_force_output(car_velocity: Vector2, car_direction: Vector2, delta: floa
 		cornering_output_vec = slip_motion.normalized() * -1 * min(abs(cornering_demand * chassis_mass), max_kinetic_friction_force * (1 - kinetic_friction_accel_factor))
 	else:
 		cornering_output_vec = slip_motion.normalized() * -1 * min(abs(cornering_demand * chassis_mass), abs(max_static_friction_force - acceleration_output_force))
-	var bound_slip_accel: float = min(abs(acceleration_demand * chassis_mass), max_kinetic_friction_force * kinetic_friction_accel_factor)
-	var bound_noslip_accel: float = min(abs(acceleration_demand * chassis_mass), max_static_friction_force)
-	var bound_slip_corner: float = min(abs(cornering_demand * chassis_mass), max_kinetic_friction_force * (1 - kinetic_friction_accel_factor))
-	var bound_noslip_corner: float = min(abs(cornering_demand * chassis_mass), abs(max_static_friction_force - acceleration_output_force))
 	
-	return (acceleration_output_vec + cornering_output_vec)
+	var return_vec: Vector2 = acceleration_output_vec + cornering_output_vec
+	return return_vec
