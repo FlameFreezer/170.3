@@ -40,27 +40,35 @@ func set_wheel_angle(steer_input: float):
 ## car_direction: direction the car is facing this frame.
 func get_force_output(car_motion: Vector2, car_direction: Vector2) -> Vector2:
 	
-	# determine direction of cornering force
+	# determine wheel angle in global space
 	var global_wheel_angle = car_direction.angle() + wheel_angle
-	var wheel_normal_vec = Vector2(cos(global_wheel_angle + PI / 2), sin(global_wheel_angle + PI / 2))
+	var wheel_normal_vec = Vector2(cos(global_wheel_angle - PI / 2), sin(global_wheel_angle - PI / 2)) # this will point to the right at steering angle 0
 	
-	# get cornering force
+	# get total force demand on front wheels
 	var slip_motion = wheel_normal_vec * (wheel_normal_vec.dot(car_motion))
-	var slip_force = slip_motion.length()
-	
-	# TODO: decompose cornering force into two vectors to split the cornering load with the rear wheels
+	var slip_force = slip_motion.length() * chassis_mass
 	
 	# determine whether force demands cause wheels to slide or not, and create friction force vector
-	var out_force: Vector2
 	if (!slipping && slip_force > max_static_friction):
 		slipping = true;
 	elif (slipping && slip_force < max_kinetic_friction):
 		slipping = false;
 	
+	# decompose force demand into two vectors
+	var car_normal_vec: Vector2 = Vector2(cos(car_direction.angle() + PI / 2), sin(car_direction.angle() + PI / 2))
+	var cornering_motion: Vector2 = car_normal_vec * slip_motion.dot(car_normal_vec) * rear_axle_offset / front_axle_offset # component of wheel load coming from cornering inertia
+	var cornering_force: float = cornering_motion.length() * chassis_mass
+	var steering_motion: Vector2 = wheel_normal_vec * slip_motion.dot(car_direction) / car_direction.length() # component of wheel load coming from steering angle
+	var steering_force: float = steering_motion.length() * chassis_mass
+	
+	# create and return traction force vector
+	var out_force: Vector2
 	if (slipping):
-		out_force = slip_motion.normalized() * -1 * min(max_kinetic_friction, slip_force)
+		out_force = steering_motion.normalized() * -1 * min(max_kinetic_friction, steering_force) # steering force going first means wheels prioritize spinning the car over preventing sideways motion
+		out_force += cornering_motion.normalized() * -1 * rear_axle_offset / front_axle_offset * min(max_kinetic_friction - steering_force, cornering_force)
 	else:
-		out_force = slip_motion.normalized() * -1 * min(max_static_friction, slip_force)
+		out_force = steering_motion.normalized() * -1 * min(max_static_friction, steering_force)
+		out_force += cornering_motion.normalized() * -1 * rear_axle_offset / front_axle_offset * min(max_static_friction - steering_force, cornering_force)
 	
 	# return friction force vector
 	return out_force
