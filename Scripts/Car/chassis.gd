@@ -71,6 +71,7 @@ func _physics_process(delta: float) -> void:
 	var current_direction = utils.get_vector2(global_basis.z)
 	var rear_force = rear_axle.get_force_output(current_velocity, current_direction, delta) * 1000.0
 	var front_force = front_axle.get_force_output(current_velocity, current_direction) * 1000.0
-	printerr("_physics_process:\nmotor_proposed_rpm: %f\nrear_axle_proposed_rpm: %f\nmotor_true_rpm: %f\nrear_wheels_true_rpm: %f\nrear_force: %v\n" % [motor_proposed_rpm, rear_axle_proposed_rpm, motor.true_rpm, rear_axle.true_rpm, rear_force])
-	apply_force(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, front_wheel_offset))
-	apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
+	printerr("_physics_process:\nmotor_proposed_rpm: %f\nrear_axle_proposed_rpm: %f\nmotor_true_rpm: %f\nrear_wheels_true_rpm: %f\nslipping: %f\nrear_force: %v\n" % [motor_proposed_rpm, rear_axle_proposed_rpm, motor.true_rpm, rear_axle.true_rpm, rear_axle.slipping as int, rear_force])
+	# apply_force(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, front_wheel_offset))
+	# apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
+	apply_force(Vector3(0, 0, -500), Vector3(0, 0, 0))

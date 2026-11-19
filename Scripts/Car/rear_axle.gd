@@ -1,8 +1,8 @@
 class_name RearAxle
 
 # constants set by _init()
-var max_static_friction: float ## max force that the rear wheels can exert without slipping.
-var max_kinetic_friction: float ## max force that the rear wheels can exert while slipping.
+var max_static_friction_force: float ## max force that the rear wheels can exert without slipping.
+var max_kinetic_friction_force: float ## max force that the rear wheels can exert while slipping.
 var kinetic_friction_accel_factor: float ## Proportion of kinetic friction that can be used by the rear wheels to accelerate.
 ##                                          The rest of the available kinetic friction force is used to provide cornering force.
 ##                                          In range [0, 1].
@@ -25,8 +25,8 @@ var slipping: bool ## Whether or not the rear wheels are sliding.
 ## Initializes variables and constants at the start of a scene.
 func _init(in_chassis_mass: float, in_front_axle_offset: float, in_rear_axle_offset: float, static_friction_coeff: float, kinetic_friction_coeff: float, in_kf_accel_factor: float, in_wheel_mass: float, in_wheel_diameter: float, in_drag_factor: float, in_handbrake_strength: float, starting_rpm: float) -> void:
 	chassis_mass = in_chassis_mass
-	max_static_friction = in_chassis_mass * static_friction_coeff
-	max_kinetic_friction = in_chassis_mass * kinetic_friction_coeff
+	max_static_friction_force = in_chassis_mass * static_friction_coeff * 9.81
+	max_kinetic_friction_force = in_chassis_mass * kinetic_friction_coeff * 9.81
 	front_axle_offset = in_front_axle_offset
 	rear_axle_offset = in_rear_axle_offset
 	wheel_mass = in_wheel_mass
@@ -75,39 +75,46 @@ func set_true_rpm(in_rpm: float) -> void:
 
 ## called only AFTER true_rpm is updated. car_velocity is car's movement vector from last frame.
 ## car_direction is car's direction vector from last frame. outputs physics forces to car body.
-func get_force_output(car_velocity: Vector2, car_direction: Vector2, _delta: float) -> Vector2:
+func get_force_output(car_velocity: Vector2, car_direction: Vector2, delta: float) -> Vector2:
 	# determine ground speed of wheels from rpm
-	var proposed_wheel_translation: Vector2 = car_direction.normalized() * wheel_diameter * PI * (true_rpm / 60) * _delta
+	var proposed_wheel_translation: Vector2 = car_direction.normalized() * wheel_diameter * PI * (true_rpm / 60) * delta
 	# use previous car speed to determine acceleration force demand
-	var acceleration_demand_vec: Vector2 = proposed_wheel_translation - car_velocity
-	var acceleration_demand_force: float = acceleration_demand_vec.length() * chassis_mass
+	var car_forward_velocity: Vector2 = car_direction.normalized() * car_direction.normalized().dot(car_velocity)
+	var acceleration_demand_vec: Vector2 = proposed_wheel_translation - (car_forward_velocity * delta)
+	var acceleration_distance: float = acceleration_demand_vec.length()
+	var acceleration_demand: float = 2 * acceleration_distance / pow(delta, 2)
 	
 	# find slip angle and use it to determine cornering force demand
 	var car_normal: Vector2 = Vector2(cos(car_direction.angle() + PI / 2), sin(car_direction.angle() + PI / 2))
-	var slip_motion: Vector2 = car_normal * car_velocity.dot(car_normal)
-	var slip_force: float = slip_motion.length() * chassis_mass
+	var slip_motion: Vector2 = car_normal * (car_velocity * delta).dot(car_normal)
+	var slip_distance: float = slip_motion.length()
+	var cornering_demand: float = 2 * slip_distance / pow(delta, 2)
 	
 	# isolate the cornering force acting on the rear wheels
-	slip_force *= front_axle_offset / rear_axle_offset
+	cornering_demand *= front_axle_offset / rear_axle_offset
 	
 	# handle slip state changes
-	if (!slipping && acceleration_demand_force + slip_force > max_static_friction):
+	if (!slipping && (acceleration_demand + cornering_demand) * chassis_mass > max_static_friction_force):
 		slipping = true;
-	elif(slipping && acceleration_demand_force + slip_force < max_kinetic_friction):
+	elif(slipping && (acceleration_demand + cornering_demand) * chassis_mass < max_kinetic_friction_force):
 		slipping = false;
 	
 	# generate and return force vector
 	var acceleration_output_vec: Vector2 # acceleration force component
 	if (slipping):
-		acceleration_output_vec = acceleration_demand_vec.normalized() * min(acceleration_demand_force, max_kinetic_friction * kinetic_friction_accel_factor)
+		acceleration_output_vec = acceleration_demand_vec.normalized() * min(abs(acceleration_demand * chassis_mass), max_kinetic_friction_force * kinetic_friction_accel_factor)
 	else:
-		acceleration_output_vec = acceleration_demand_vec.normalized() * min(acceleration_demand_force, max_static_friction)
+		acceleration_output_vec = acceleration_demand_vec.normalized() * min(abs(acceleration_demand * chassis_mass), max_static_friction_force)
 	var acceleration_output_force: float = acceleration_output_vec.length()
 	
 	var cornering_output_vec: Vector2 # cornering force component
 	if (slipping):
-		cornering_output_vec = slip_motion.normalized() * -1 * min(slip_force, max_kinetic_friction * (1 - kinetic_friction_accel_factor))
+		cornering_output_vec = slip_motion.normalized() * -1 * min(abs(cornering_demand * chassis_mass), max_kinetic_friction_force * (1 - kinetic_friction_accel_factor))
 	else:
-		cornering_output_vec = slip_motion.normalized() * -1 * min(slip_force, max_static_friction - acceleration_output_force)
+		cornering_output_vec = slip_motion.normalized() * -1 * min(abs(cornering_demand * chassis_mass), abs(max_static_friction_force - acceleration_output_force))
+	var bound_slip_accel: float = min(abs(acceleration_demand * chassis_mass), max_kinetic_friction_force * kinetic_friction_accel_factor)
+	var bound_noslip_accel: float = min(abs(acceleration_demand * chassis_mass), max_static_friction_force)
+	var bound_slip_corner: float = min(abs(cornering_demand * chassis_mass), max_kinetic_friction_force * (1 - kinetic_friction_accel_factor))
+	var bound_noslip_corner: float = min(abs(cornering_demand * chassis_mass), abs(max_static_friction_force - acceleration_output_force))
 	
-	return acceleration_output_vec + cornering_output_vec
+	return (acceleration_output_vec + cornering_output_vec)
