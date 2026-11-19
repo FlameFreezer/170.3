@@ -18,6 +18,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3895338, 1.2053716)
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=782957679]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0939558, 0)
 script = ExtResource("1_0wfyh")
+front_wheel_offset = null
+rear_wheel_offset = null
+wheel_static_friction = null
+wheel_kinetic_friction = null
+kf_accel_factor = null
+wheel_mass = null
+wheel_diameter = null
+drag_factor = null
+handbrake_strength = null
+max_steering_angle = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1578132594]
 shape = SubResource("SphereShape3D_2e8lr")
