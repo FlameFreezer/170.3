@@ -18,8 +18,7 @@ physics_material_override = SubResource("PhysicsMaterial_4mfdp")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5200164, 2.452403, 0.48898888)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=421569984]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 48.193104, 0)
-light_color = Color(1, 0.5058824, 1, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.620911, 0)
 light_energy = 16.0
 omni_range = 193.254
 

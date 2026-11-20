@@ -91,7 +91,7 @@ func get_force_output(car_velocity: Vector2, car_direction: Vector2, delta: floa
 	var cornering_demand: float = 2 * slip_distance / pow(delta, 2)
 	
 	# isolate the cornering force acting on the rear wheels
-	cornering_demand /= 1 + rear_axle_distance_from_com / front_axle_distance_from_com
+	# cornering_demand /= 1 + rear_axle_distance_from_com / front_axle_distance_from_com
 	
 	# handle slip state changes
 	if (!slipping && (acceleration_demand + cornering_demand) * chassis_mass > max_static_friction_force):

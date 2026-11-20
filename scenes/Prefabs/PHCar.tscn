@@ -8,6 +8,21 @@
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w70d6"]
 friction = 0.0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0wfyh"]
+albedo_color = Color(0.73541087, 0.20021743, 0.47464514, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ynk2d"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1a7xp"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xf787"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_caoin"]
+albedo_color = Color(0, 0, 0, 1)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_oajxw"]
 size = Vector3(2, 1, 5)
 
@@ -19,22 +34,27 @@ script = ExtResource("2_w70d6")
 [node name="1703Ph2CarBody" type="MeshInstance3D" parent="." unique_id=1837564033]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.49327415, 0.29302418)
 mesh = ExtResource("1_py02g")
+surface_material_override/0 = SubResource("StandardMaterial3D_0wfyh")
 
 [node name="1703PhTireFrontLeft" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=367701499]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.255, 0, -2.5)
 mesh = ExtResource("2_8ty4o")
+surface_material_override/0 = SubResource("StandardMaterial3D_ynk2d")
 
 [node name="1703PhTireFrontRight" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=1727197525]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, -2.5)
 mesh = ExtResource("2_8ty4o")
+surface_material_override/0 = SubResource("StandardMaterial3D_1a7xp")
 
 [node name="1703PhTireBackLeft" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=318854468]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.255, 0, 0)
 mesh = ExtResource("2_8ty4o")
+surface_material_override/0 = SubResource("StandardMaterial3D_xf787")
 
 [node name="1703PhTireBackRight" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=846160020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, 0)
 mesh = ExtResource("2_8ty4o")
+surface_material_override/0 = SubResource("StandardMaterial3D_caoin")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2110563621]
 shape = SubResource("BoxShape3D_oajxw")
