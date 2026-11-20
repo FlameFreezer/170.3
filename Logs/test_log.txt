@@ -1,0 +1,146 @@
+STARING: motor tests
+
+PASSED: test_set_true_rpm
+
+starting motor spinup test from 0 to redline rpm of 10000.000000
+spinup from 0 test: motor proposed rpm of 97.176973 given true rpm 0.000000 and delta 0.017000 (acceleration of 97.176973)
+spinup from 0 test: motor proposed rpm of 299.164040 given true rpm 200.000000 and delta 0.017000 (acceleration of 99.164040)
+spinup from 0 test: motor proposed rpm of 502.112740 given true rpm 400.000000 and delta 0.017000 (acceleration of 102.112740)
+spinup from 0 test: motor proposed rpm of 705.005265 given true rpm 600.000000 and delta 0.017000 (acceleration of 105.005265)
+spinup from 0 test: motor proposed rpm of 907.839232 given true rpm 800.000000 and delta 0.017000 (acceleration of 107.839232)
+spinup from 0 test: motor proposed rpm of 1110.612497 given true rpm 1000.000000 and delta 0.017000 (acceleration of 110.612497)
+spinup from 0 test: motor proposed rpm of 1313.323119 given true rpm 1200.000000 and delta 0.017000 (acceleration of 113.323119)
+spinup from 0 test: motor proposed rpm of 1515.969322 given true rpm 1400.000000 and delta 0.017000 (acceleration of 115.969322)
+spinup from 0 test: motor proposed rpm of 1718.549465 given true rpm 1600.000000 and delta 0.017000 (acceleration of 118.549465)
+spinup from 0 test: motor proposed rpm of 1921.062016 given true rpm 1800.000000 and delta 0.017000 (acceleration of 121.062016)
+spinup from 0 test: motor proposed rpm of 2123.505526 given true rpm 2000.000000 and delta 0.017000 (acceleration of 123.505526)
+spinup from 0 test: motor proposed rpm of 2325.878603 given true rpm 2200.000000 and delta 0.017000 (acceleration of 125.878603)
+spinup from 0 test: motor proposed rpm of 2528.179892 given true rpm 2400.000000 and delta 0.017000 (acceleration of 128.179892)
+spinup from 0 test: motor proposed rpm of 2730.408054 given true rpm 2600.000000 and delta 0.017000 (acceleration of 130.408054)
+spinup from 0 test: motor proposed rpm of 2932.561743 given true rpm 2800.000000 and delta 0.017000 (acceleration of 132.561743)
+spinup from 0 test: motor proposed rpm of 3134.639586 given true rpm 3000.000000 and delta 0.017000 (acceleration of 134.639586)
+spinup from 0 test: motor proposed rpm of 3336.640159 given true rpm 3200.000000 and delta 0.017000 (acceleration of 136.640159)
+spinup from 0 test: motor proposed rpm of 3538.561966 given true rpm 3400.000000 and delta 0.017000 (acceleration of 138.561966)
+spinup from 0 test: motor proposed rpm of 3740.403416 given true rpm 3600.000000 and delta 0.017000 (acceleration of 140.403416)
+spinup from 0 test: motor proposed rpm of 3942.162791 given true rpm 3800.000000 and delta 0.017000 (acceleration of 142.162791)
+spinup from 0 test: motor proposed rpm of 4143.838221 given true rpm 4000.000000 and delta 0.017000 (acceleration of 143.838221)
+spinup from 0 test: motor proposed rpm of 4345.427651 given true rpm 4200.000000 and delta 0.017000 (acceleration of 145.427651)
+spinup from 0 test: motor proposed rpm of 4546.928800 given true rpm 4400.000000 and delta 0.017000 (acceleration of 146.928800)
+spinup from 0 test: motor proposed rpm of 4748.339123 given true rpm 4600.000000 and delta 0.017000 (acceleration of 148.339123)
+spinup from 0 test: motor proposed rpm of 4949.655758 given true rpm 4800.000000 and delta 0.017000 (acceleration of 149.655758)
+spinup from 0 test: motor proposed rpm of 5150.875468 given true rpm 5000.000000 and delta 0.017000 (acceleration of 150.875468)
+spinup from 0 test: motor proposed rpm of 5351.994574 given true rpm 5200.000000 and delta 0.017000 (acceleration of 151.994574)
+spinup from 0 test: motor proposed rpm of 5553.008873 given true rpm 5400.000000 and delta 0.017000 (acceleration of 153.008873)
+spinup from 0 test: motor proposed rpm of 5753.913540 given true rpm 5600.000000 and delta 0.017000 (acceleration of 153.913540)
+spinup from 0 test: motor proposed rpm of 5954.703008 given true rpm 5800.000000 and delta 0.017000 (acceleration of 154.703008)
+spinup from 0 test: motor proposed rpm of 6155.370825 given true rpm 6000.000000 and delta 0.017000 (acceleration of 155.370825)
+spinup from 0 test: motor proposed rpm of 6355.909476 given true rpm 6200.000000 and delta 0.017000 (acceleration of 155.909476)
+spinup from 0 test: motor proposed rpm of 6556.310163 given true rpm 6400.000000 and delta 0.017000 (acceleration of 156.310163)
+spinup from 0 test: motor proposed rpm of 6756.562530 given true rpm 6600.000000 and delta 0.017000 (acceleration of 156.562530)
+spinup from 0 test: motor proposed rpm of 6956.654311 given true rpm 6800.000000 and delta 0.017000 (acceleration of 156.654311)
+spinup from 0 test: motor proposed rpm of 7156.570894 given true rpm 7000.000000 and delta 0.017000 (acceleration of 156.570894)
+spinup from 0 test: motor proposed rpm of 7356.294741 given true rpm 7200.000000 and delta 0.017000 (acceleration of 156.294741)
+spinup from 0 test: motor proposed rpm of 7555.804649 given true rpm 7400.000000 and delta 0.017000 (acceleration of 155.804649)
+spinup from 0 test: motor proposed rpm of 7755.074762 given true rpm 7600.000000 and delta 0.017000 (acceleration of 155.074762)
+spinup from 0 test: motor proposed rpm of 7954.073255 given true rpm 7800.000000 and delta 0.017000 (acceleration of 154.073255)
+spinup from 0 test: motor proposed rpm of 8152.760546 given true rpm 8000.000000 and delta 0.017000 (acceleration of 152.760546)
+spinup from 0 test: motor proposed rpm of 8351.086815 given true rpm 8200.000000 and delta 0.017000 (acceleration of 151.086815)
+spinup from 0 test: motor proposed rpm of 8548.988533 given true rpm 8400.000000 and delta 0.017000 (acceleration of 148.988533)
+spinup from 0 test: motor proposed rpm of 8746.383442 given true rpm 8600.000000 and delta 0.017000 (acceleration of 146.383442)
+spinup from 0 test: motor proposed rpm of 8943.163195 given true rpm 8800.000000 and delta 0.017000 (acceleration of 143.163195)
+spinup from 0 test: motor proposed rpm of 9139.182197 given true rpm 9000.000000 and delta 0.017000 (acceleration of 139.182197)
+spinup from 0 test: motor proposed rpm of 9334.240215 given true rpm 9200.000000 and delta 0.017000 (acceleration of 134.240215)
+spinup from 0 test: motor proposed rpm of 9528.054215 given true rpm 9400.000000 and delta 0.017000 (acceleration of 128.054215)
+spinup from 0 test: motor proposed rpm of 9720.210810 given true rpm 9600.000000 and delta 0.017000 (acceleration of 120.210810)
+spinup from 0 test: motor proposed rpm of 9910.081658 given true rpm 9800.000000 and delta 0.017000 (acceleration of 110.081658)
+spinup from 0 test: motor proposed rpm of 10000.000000 given true rpm 10000.000000 and delta 0.017000 (acceleration of 0.000000)
+
+PASSED: spinup from 0 test
+
+starting motor spindown test from redline rpm of 10000.000000 to 0
+
+spindown from redline test: motor proposed rpm of 9932.000000 given true rpm 10000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 9732.000000 given true rpm 9800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 9532.000000 given true rpm 9600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 9332.000000 given true rpm 9400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 9132.000000 given true rpm 9200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 8932.000000 given true rpm 9000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 8732.000000 given true rpm 8800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 8532.000000 given true rpm 8600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 8332.000000 given true rpm 8400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 8132.000000 given true rpm 8200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 7932.000000 given true rpm 8000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 7732.000000 given true rpm 7800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 7532.000000 given true rpm 7600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 7332.000000 given true rpm 7400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 7132.000000 given true rpm 7200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 6932.000000 given true rpm 7000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 6732.000000 given true rpm 6800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 6532.000000 given true rpm 6600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 6332.000000 given true rpm 6400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 6132.000000 given true rpm 6200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 5932.000000 given true rpm 6000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 5732.000000 given true rpm 5800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 5532.000000 given true rpm 5600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 5332.000000 given true rpm 5400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 5132.000000 given true rpm 5200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 4932.000000 given true rpm 5000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 4732.000000 given true rpm 4800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 4532.000000 given true rpm 4600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 4332.000000 given true rpm 4400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 4132.000000 given true rpm 4200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 3932.000000 given true rpm 4000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 3732.000000 given true rpm 3800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 3532.000000 given true rpm 3600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 3332.000000 given true rpm 3400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 3132.000000 given true rpm 3200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 2932.000000 given true rpm 3000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 2732.000000 given true rpm 2800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 2532.000000 given true rpm 2600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 2332.000000 given true rpm 2400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 2132.000000 given true rpm 2200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 1932.000000 given true rpm 2000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 1732.000000 given true rpm 1800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 1532.000000 given true rpm 1600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 1332.000000 given true rpm 1400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 1132.000000 given true rpm 1200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 932.000000 given true rpm 1000.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 732.000000 given true rpm 800.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 532.000000 given true rpm 600.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 332.000000 given true rpm 400.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 132.000000 given true rpm 200.000000 and delta 0.017000 (deceleration of 68.000000)
+spindown from redline test: motor proposed rpm of 0.000000 given true rpm 0.000000 and delta 0.017000 (deceleration of 0.000000)
+
+PASSED: spindown from redline test
+
+starting motor spindown test from above redline rpm (starting at 15000.000000) to redline rpm 10000.000000
+
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 15000.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 14800.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 14600.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 14400.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 14200.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 14000.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 13800.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 13600.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 13400.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 13200.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 13000.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 12800.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 12600.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 12400.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 12200.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 12000.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 11800.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 11600.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 11400.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 11200.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 11000.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 10800.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 10600.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 10400.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 10200.000000 and delta 0.017000
+spindown from above redline test: motor proposed rpm of 10000.000000 given true rpm 10000.000000 and delta 0.017000
+
+PASSED: spindown from above redline test
+

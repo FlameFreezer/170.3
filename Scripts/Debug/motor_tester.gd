@@ -1,4 +1,4 @@
-class_name MotorTester extends Node
+class_name MotorTester extends Resource
 
 var motor: Motor
 @export var motor_redline_rpm: float
@@ -11,23 +11,21 @@ var motor: Motor
 
 @export var continue_after_failing: bool
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+var _log_file: FileAccess
+
+func run(log_file: FileAccess) -> bool:
+	_log_file = log_file
 	motor = Motor.new(motor_redline_rpm, motor_flywheel_weight, motor_cylinder_volume, motor_starting_rpm)
+	_log_file.store_string("STARING: motor tests\n\n")
 	var test_pass: bool
 	test_pass = test_set_true_rpm()
 	if (test_pass):
-		print("PASSED: test_set_true_rpm")
+		_log_file.store_string("PASSED: test_set_true_rpm\n\n")
 	if (test_pass || continue_after_failing):
 		test_pass = test_propose_rpm()
 	if (test_pass):
-		print("\n\nPASSED: test_propose_rpm passed all tests.")
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+		print("PASSED: test_propose_rpm passed all tests.\n\n")
+	return test_pass
 
 func test_set_true_rpm() -> bool:
 	var to_ret: bool = true
@@ -43,7 +41,9 @@ func test_set_true_rpm() -> bool:
 	return to_ret
 
 func true_rpm_print_test_fail(motor_to_rpm: float) -> void:
-	printerr("motor_tester.test_set_true_rpm: failed to set motor's true_rpm to %f (motor was actually set to rpm %f)" % motor_to_rpm, motor.true_rpm)
+	var msg: String = "motor_tester.test_set_true_rpm: failed to set motor's true_rpm to %f (motor was actually set to rpm %f\n\n)" % [motor_to_rpm, motor.true_rpm]
+	printerr(msg)
+	_log_file.store_string(msg)
 
 func test_propose_rpm() -> bool:
 	var to_ret: bool = true
@@ -53,60 +53,69 @@ func test_propose_rpm() -> bool:
 	var motor_throttle_state: float = 1
 	motor.set_true_rpm(motor_rpm)
 	var output: float = motor.propose_rpm(motor_throttle_state, test_delta)
-	print("\n\nstarting motor spinup test from 0 to redline rpm of %f\n" % motor_redline_rpm)
-	print("spinup from 0 test: motor proposed rpm of %f given true rpm %f and delta %f (acceleration of %f)" % [output, motor.true_rpm, test_delta, output - motor.true_rpm])
+	_log_file.store_string("starting motor spinup test from 0 to redline rpm of %f\n" % motor_redline_rpm)
+	_log_file.store_string("spinup from 0 test: motor proposed rpm of %f given true rpm %f and delta %f (acceleration of %f)\n" % [output, motor.true_rpm, test_delta, output - motor.true_rpm])
 	motor_rpm += 1
 	motor.set_true_rpm(motor_rpm)
 	while (motor_rpm <= motor_redline_rpm):
 		output = motor.propose_rpm(motor_throttle_state, test_delta)
 		motor.set_true_rpm(motor_rpm)
 		if (motor_rpm >= last_printed_rpm + rpm_print_gap):
-			print("spinup from 0 test: motor proposed rpm of %f given true rpm %f and delta %f (acceleration of %f)" % [output, motor.true_rpm, test_delta, output - motor_rpm])
+			_log_file.store_string("spinup from 0 test: motor proposed rpm of %f given true rpm %f and delta %f (acceleration of %f)\n" % [output, motor.true_rpm, test_delta, output - motor_rpm])
 			last_printed_rpm = motor_rpm
 		if (output > motor_redline_rpm):
-			printerr("FAILED: spinup from 0 test: given true rpm of %f, motor proposed rpm of %f, which was higher than its redline of %f" % [motor.true_rpm, output, motor.redline_rpm])
+			var errmsg: String = "FAILED: spinup from 0 test: given true rpm of %f, motor proposed rpm of %f, which was higher than its redline of %f\n\n" % [motor.true_rpm, output, motor.redline_rpm]
+			printerr(errmsg)
+			_log_file.store_string(errmsg)
 			to_ret = false
 			if (!continue_after_failing):
 				return to_ret
 		motor_rpm += 1
-	print("\n\nPASSED: spinup from 0 test")
+	var successmsg: String = "\nPASSED: spinup from 0 test\n\n"
+	print(successmsg)
+	_log_file.store_string(successmsg)
 	
 	# test spindown from redline
-	print("\n\nstarting motor spindown test from redline rpm of %f to 0\n" % motor_redline_rpm)
+	_log_file.store_string("starting motor spindown test from redline rpm of %f to 0\n\n" % motor_redline_rpm)
 	motor_rpm = motor_redline_rpm
 	motor_throttle_state = 0
 	motor.set_true_rpm(motor_redline_rpm)
 	last_printed_rpm = motor_rpm
 	output = motor.propose_rpm(motor_throttle_state, test_delta)
 	motor_rpm -= 1
-	print ("spindown from redline test: motor proposed rpm of %f given true rpm %f and delta %f (deceleration of %f)" % [output, motor.true_rpm, test_delta, motor.true_rpm - output])
+	_log_file.store_string("spindown from redline test: motor proposed rpm of %f given true rpm %f and delta %f (deceleration of %f)\n" % [output, motor.true_rpm, test_delta, motor.true_rpm - output])
 	motor.set_true_rpm(motor_rpm)
 	while (motor_rpm >= 0):
 		output = motor.propose_rpm(motor_throttle_state, test_delta)
 		if (motor_rpm <= last_printed_rpm - rpm_print_gap):
-			print("spindown from redline test: motor proposed rpm of %f given true rpm %f and delta %f (deceleration of %f)" % [output, motor.true_rpm, test_delta, motor.true_rpm - output])
+			_log_file.store_string("spindown from redline test: motor proposed rpm of %f given true rpm %f and delta %f (deceleration of %f)\n" % [output, motor.true_rpm, test_delta, motor.true_rpm - output])
 			last_printed_rpm = motor_rpm
 		if (output < 0):
-			printerr("FAILED: spindown from 0 test: motor proposed rpm of %f, which was lower than the lower bound of 0" % output)
+			var errmsg: String = "FAILED: spindown from 0 test: motor proposed rpm of %f, which was lower than the lower bound of 0\n\n" % output
+			printerr(errmsg)
+			_log_file.store_string(errmsg)
 			to_ret = false
 			if (!continue_after_failing):
 				return to_ret
 		motor_rpm -= 1
 		motor.set_true_rpm(motor_rpm)
-		
-	print("\n\nPASSED: spindown from redline test")
+	successmsg = "\nPASSED: spindown from redline test\n\n"
+	print(successmsg)
+	_log_file.store_string(successmsg)
 	
 	
 	# test spindown from above redline with throttle active
 	motor_rpm = motor_redline_rpm * 1.5
-	print("\n\n starting motor spindown test from above redline rpm (starting at %f) to redline rpm %f\n" % [motor_rpm, motor_redline_rpm])
+	_log_file.store_string("starting motor spindown test from above redline rpm (starting at %f) to redline rpm %f\n\n" % [motor_rpm, motor_redline_rpm])
 	motor_throttle_state = 1
 	motor.set_true_rpm(motor_rpm)
 	last_printed_rpm = motor_rpm
 	output = motor.propose_rpm(motor_throttle_state, test_delta)
-	print("spindown from above redline test: motor proposed rpm of %f given true rpm %f and delta %f" % [output, motor.true_rpm, test_delta])
+	_log_file.store_string("spindown from above redline test: motor proposed rpm of %f given true rpm %f and delta %f\n" % [output, motor.true_rpm, test_delta])
 	if (output > motor_redline_rpm):
-		printerr("FAILED: spindown from above redline test: given true rpm %f, motor proposed rpm of %f, which is greater than its redline of %f" % [motor.true_rpm, output, motor.redline_rpm])
+		var errmsg: String = "FAILED: spindown from above redline test: given true rpm %f, motor proposed rpm of %f, which is greater than its redline of %f\n\n" % [motor.true_rpm, output, motor.redline_rpm]
+		printerr(errmsg)
+		_log_file.store_string(errmsg)
 		to_ret = false
 		if (!continue_after_failing):
 			return to_ret
@@ -116,16 +125,19 @@ func test_propose_rpm() -> bool:
 	while (motor_rpm >= motor_redline_rpm):
 		output = motor.propose_rpm(motor_throttle_state, test_delta)
 		if (motor_rpm <= last_printed_rpm - rpm_print_gap):
-			print("spindown from above redline test: motor proposed rpm of %f given true rpm %f and delta %f" % [output, motor.true_rpm, test_delta])
+			_log_file.store_string("spindown from above redline test: motor proposed rpm of %f given true rpm %f and delta %f\n" % [output, motor.true_rpm, test_delta])
 			last_printed_rpm = motor_rpm
 		if (output > motor_redline_rpm):
-			printerr("FAILED: spindown from above redline test: given true rpm %f, motor proposed rpm of %f, which is greater than its redline" % [motor_rpm, output])
+			var errmsg: String = "FAILED: spindown from above redline test: given true rpm %f, motor proposed rpm of %f, which is greater than its redline\n\n" % [motor_rpm, output]
+			printerr(errmsg)
+			_log_file.store_string(errmsg)
 			to_ret = false
 			if (!continue_after_failing):
 				return to_ret
 		motor_rpm -= 1
 		motor.set_true_rpm(motor_rpm)
-	
-	print("\n\nPASSED: spindown from above redline test")
+	successmsg = "\nPASSED: spindown from above redline test\n\n"
+	print(successmsg)
+	_log_file.store_string(successmsg)
 	
 	return to_ret
