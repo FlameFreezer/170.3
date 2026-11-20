@@ -18,7 +18,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3895338, 1.2053716)
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=782957679]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0939558, 0)
 script = ExtResource("1_0wfyh")
-gear_ratios = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+gear_ratios = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1578132594]
 shape = SubResource("SphereShape3D_2e8lr")

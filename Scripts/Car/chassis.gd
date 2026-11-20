@@ -86,8 +86,8 @@ func _physics_process(delta: float) -> void:
 	shifter_input = 0
 	
 	transmission.transmit_energy(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
-	var front_axle_velocity = utils.get_vector2(front_axle_pos.global_position - front_axle_last_position)
-	var rear_axle_velocity = utils.get_vector2(rear_axle_pos.global_position - rear_axle_last_position)
+	var front_axle_velocity = utils.get_vector2((front_axle_pos.global_position - front_axle_last_position) / delta)
+	var rear_axle_velocity = utils.get_vector2((rear_axle_pos.global_position - rear_axle_last_position) / delta)
 	if (front_axle_velocity.length() < 0.002):
 		front_axle_velocity = Vector2(snappedf(front_axle_velocity.x, 0.001), snappedf(front_axle_velocity.y, 0.001))
 	if (rear_axle_velocity.length() < 0.002):
