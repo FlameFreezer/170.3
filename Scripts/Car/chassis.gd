@@ -2,7 +2,7 @@ class_name Chassis extends RigidBody3D
 
 signal update_values(String)
 
-var front_axle: FrontWheels
+var front_axle: FrontAxle
 var rear_axle: RearAxle
 var motor: Motor
 var transmission: Transmission
@@ -57,7 +57,7 @@ var elapsed_time: float
 # Initialize everything using the tuning variables
 func _ready() -> void:
 	rear_axle = RearAxle.new(mass, front_wheel_offset, rear_wheel_offset, rear_wheels_static_friction, rear_wheels_kinetic_friction, kinetic_friction_acceleration_factor, wheel_mass, wheel_diameter, drag_factor, handbrake_strength, starting_rpm)
-	front_axle = FrontWheels.new(mass, front_wheel_offset, rear_wheel_offset, front_wheels_static_friction, front_wheels_kinetic_friction, max_steering_angle, 0)
+	front_axle = FrontAxle.new(mass, front_wheel_offset, rear_wheel_offset, front_wheels_static_friction, front_wheels_kinetic_friction, max_steering_angle, 0)
 	motor = Motor.new(redline_rpm, flywheel_weight, cylinder_volume, starting_rpm)
 	transmission = Transmission.new(gear_ratios, clutch_response_time, starting_gear_ratio_index)
 	elapsed_time = 0

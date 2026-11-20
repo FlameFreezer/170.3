@@ -1,4 +1,4 @@
-class_name FrontWheels
+class_name FrontAxle
 
 # constants set by _init()
 var max_static_friction: float ## max force that can be applied by the front wheels without slipping.

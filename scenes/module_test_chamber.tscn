@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://gudvyd7cl1qt"]
+
+[ext_resource type="Script" uid="uid://hdytpe6qfvb2" path="res://Scripts/Debug/motor_tester.gd" id="1_f6qbe"]
+
+[node name="ModuleTestChamber" type="Node3D" unique_id=327370377]
+
+[node name="MotorTester" type="Node" parent="." unique_id=1629551887]
+script = ExtResource("1_f6qbe")
+motor_redline_rpm = 10000.0
+motor_flywheel_weight = 10.0
+motor_cylinder_volume = 1.0
+test_delta = 0.017
+rpm_print_gap = 200.0
+metadata/_custom_type_script = "uid://hdytpe6qfvb2"

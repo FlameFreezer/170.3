@@ -44,6 +44,9 @@ func propose_rpm(throttle_state: float, delta: float) -> float:
 	else:
 		rpm_to_propose = max(true_rpm + _calculate_deceleration_value() * delta, target_rpm)
 	
+	# engine can never propose an rpm above its redline or below 0
+	rpm_to_propose = clamp(rpm_to_propose, 0, redline_rpm)
+	
 	# return resulting rpm value
 	return rpm_to_propose
 
