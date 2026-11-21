@@ -16,15 +16,19 @@ var _log_file: FileAccess
 func run(log_file: FileAccess) -> bool:
 	_log_file = log_file
 	motor = Motor.new(motor_redline_rpm, motor_flywheel_weight, motor_cylinder_volume, motor_starting_rpm)
-	_log_file.store_string("STARING: motor tests\n\n")
+	_log_file.store_string("STARTING: motor tests\n\n")
 	var test_pass: bool
 	test_pass = test_set_true_rpm()
 	if (test_pass):
-		_log_file.store_string("PASSED: test_set_true_rpm\n\n")
+		_log_file.store_string("PASSED: test_set_true_rpm passed all tests.\n\n")
 	if (test_pass || continue_after_failing):
 		test_pass = test_propose_rpm()
 	if (test_pass):
-		print("PASSED: test_propose_rpm passed all tests.\n\n")
+		_log_file.store_string("PASSED: test_propose_rpm passed all tests.\n\n")
+		
+		## keep this store_string in the last test_pass check
+		_log_file.store_string("PASSED: motor passed all tests.\n")
+	
 	return test_pass
 
 func test_set_true_rpm() -> bool:

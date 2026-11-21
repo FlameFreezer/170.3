@@ -11,7 +11,7 @@ var kinetic_friction_accel_factor: float ## Proportion of kinetic friction that 
 var chassis_mass: float ## mass of the whole car.
 var front_axle_distance_from_com: float ## distance from car's center of mass to the front axle.
 var rear_axle_distance_from_com: float ## distance from the car's center of mass to the rear axle.
-var wheel_mass: float ## wmass of the rear wheels.
+var wheel_mass: float ## mass of the rear wheels.
 var wheel_diameter: float ## diameter of the rear wheels.
 var drag_factor: float ## In range [0, 1]. proportion of car's speed lost per second under no acceleration. A value of 0 means no drag.
 var handbrake_strength: float ## how much the transmission favors the rear wheels over the engine when the handbrake is fully active.
