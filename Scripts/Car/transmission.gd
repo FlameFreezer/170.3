@@ -37,7 +37,7 @@ func transmit_energy(motor_proposed_rpm: float, rear_axle_proposed_rpm: float, m
 	var motor_new_rpm : float = motor_proposed_rpm
 	var rear_axle_new_rpm : float = rear_axle_proposed_rpm
 	if _clutch_state != 1.0:
-		var ideal_rpm := _get_ideal_rpm(motor_proposed_rpm, rear_axle_proposed_rpm, motor.flywheel_weight, rear_axle.wheel_diameter / 2.0, rear_axle.adjusted_wheel_mass)
+		var ideal_rpm := _get_ideal_rpm(motor_proposed_rpm, rear_axle_proposed_rpm, motor.flywheel_weight, rear_axle.adjusted_wheel_mass, rear_axle.wheel_diameter / 2.0)
 		## The percentage of force that the clutch is actually able to apply to the motor and rear axle
 		motor_new_rpm = lerpf(motor.true_rpm, ideal_rpm, 1.0 - _clutch_state)
 		rear_axle_new_rpm = lerpf(rear_axle.true_rpm, ideal_rpm * gear_ratios[current_gear_ratio_index], 1.0 - _clutch_state)
@@ -45,7 +45,7 @@ func transmit_energy(motor_proposed_rpm: float, rear_axle_proposed_rpm: float, m
 	rear_axle.set_true_rpm(rear_axle_new_rpm)
 
 ## Checks the kinetic energy of the system to find out how fast the motor flywheel should be spinning at the end of this frame
-func _get_ideal_rpm(motor_proposed_rpm: float, rear_axle_proposed_rpm: float, motor_flywheel_weight: float, rear_axle_wheel_radius: float, rear_axle_wheel_mass: float) -> float:
+func _get_ideal_rpm(motor_proposed_rpm: float, rear_axle_proposed_rpm: float, motor_flywheel_weight: float, rear_axle_wheel_mass: float, rear_axle_wheel_radius: float) -> float:
 	## Amount of energy the motor can generate
 	var ke_motor_proposed := utils.kinetic_energy(motor_proposed_rpm, motor_flywheel_weight)
 	## Amount of energy the rear axle would have if unimpeded

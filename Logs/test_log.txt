@@ -1452,3 +1452,4 @@ Get ideal RPM:
 	Rear Wheel Weight: 1.000000
 	Expected: 7776.283703, got: 7776.283703
 PASSED: test_get_ideal_rpm passed all tests
+
