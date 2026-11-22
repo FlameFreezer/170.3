@@ -1427,3 +1427,28 @@ Updating clutch state: input: false, state: 0.048000
 Updating clutch state: input: false, state: 0.014000
 Updating clutch state: input: false, state: 0.000000
 PASSED: test_update_clutch_state passed all tests
+
+Get ideal RPM dummy case: motor_current_rpm == motor_proposed_rpm == rear_axle_rpm. Expected 1.0, got 1.000000
+Get ideal RPM dummy case with gear ratio 0.020000. Expected 1.413931, got 1.413931.
+Get ideal RPM:
+	Proposed Motor RPM: 2000.000000
+	Proposed Rear Axle RPM: 150.000000
+	Motor Flywheel Weight: 4.000000
+	Rear Wheel Radius: 0.300000
+	Rear Wheel Weight: 1.000000
+	Expected: 2000.235107, got: 2000.235107
+Get ideal RPM:
+	Proposed Motor RPM: 2000.000000
+	Proposed Rear Axle RPM: 150.000000
+	Motor Flywheel Weight: 4.000000
+	Rear Wheel Radius: 0.300000
+	Rear Wheel Weight: 1.000000
+	Expected: 1999.101958, got: 1999.101958
+Get ideal RPM:
+	Proposed Motor RPM: 2000.000000
+	Proposed Rear Axle RPM: 150.000000
+	Motor Flywheel Weight: 4.000000
+	Rear Wheel Radius: 0.300000
+	Rear Wheel Weight: 1.000000
+	Expected: 7776.283703, got: 7776.283703
+PASSED: test_get_ideal_rpm passed all tests
