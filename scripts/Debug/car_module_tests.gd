@@ -13,6 +13,9 @@ func _ready() -> void:
 	if (test_pass || continue_after_failing):
 		test_pass = rear_axle_tests.run(test_log_file)
 	if (test_pass || continue_after_failing):
+		# Transmission depends on these objects to run its tests
+		transmission_tests.motor = motor_tests.motor
+		transmission_tests.rear_axle = rear_axle_tests.rear_axle_drivetrain
 		test_pass = transmission_tests.run(test_log_file)
 	
 	test_log_file.close()

@@ -1,6 +1,8 @@
 class_name TransmissionTester extends Resource
 
 var transmission: Transmission
+var motor: Motor
+var rear_axle: RearAxle
 
 @export var gear_ratios: Array[float]
 @export var clutch_response_time: float

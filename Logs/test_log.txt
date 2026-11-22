@@ -1427,4 +1427,3 @@ Updating clutch state: input: false, state: 0.048000
 Updating clutch state: input: false, state: 0.014000
 Updating clutch state: input: false, state: 0.000000
 PASSED: test_update_clutch_state passed all tests
-
