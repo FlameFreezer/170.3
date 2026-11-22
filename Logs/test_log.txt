@@ -1350,3 +1350,17 @@ PASSED: spindown from -10000.000000 tests
 PASSED: test_propose_rpm passed all tests.
 
 PASSED: RearAxle (drivetrain side) passed all tests.
+STARTING: Transmission tests
+
+Shifting gear up one time: was on index 0. Expected index 1,got 1
+Shifting gear up one time: was on index 1. Expected index 2,got 2
+Shifting gear up one time: was on index 2. Expected index 3,got 3
+Shifting gear up one time: was on index 3. Expected index 4,got 4
+Shifting gear up one time: was on index 4. Expected index 5,got 5
+Shifting gear up one time when at maximum: was on index 5. Expected index 5,got 5
+Shifting gear down one time: was on index 5. Expected index 4,got 4
+Shifting gear down one time: was on index 4. Expected index 3,got 3
+Shifting gear down one time: was on index 3. Expected index 2,got 2
+Shifting gear down one time: was on index 2. Expected index 1,got 1
+Shifting gear down one time: was on index 1. Expected index 0,got 0
+Shifting gear down one time when at zero: was on index 0. Expected index 0,got 0

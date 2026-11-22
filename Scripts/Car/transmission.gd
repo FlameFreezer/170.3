@@ -22,7 +22,7 @@ func _init(in_gear_ratios: Array[float], in_clutch_response_time: float, in_gear
 ## Change the gear ratio to the index supplied. Prints a message if out of range, but clamps the index to a valid range.
 func update_gear(shifter_input: int) -> void:
 	current_gear_ratio_index += shifter_input
-	if(current_gear_ratio_index > gear_ratios.size() || current_gear_ratio_index < 0):
+	if(current_gear_ratio_index >= gear_ratios.size() || current_gear_ratio_index < 0):
 		if (current_gear_ratio_index > 0):
 			current_gear_ratio_index = gear_ratios.size() - 1
 		else:

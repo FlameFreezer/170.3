@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://gudvyd7cl1qt"]
 
-[ext_resource type="Script" uid="uid://hdytpe6qfvb2" path="res://Scripts/Debug/motor_tester.gd" id="1_f6qbe"]
-[ext_resource type="Script" uid="uid://cpuah64ddy6d4" path="res://Scripts/Debug/car_module_tests.gd" id="2_dl8kx"]
-[ext_resource type="Script" uid="uid://be5ydbb5pfstl" path="res://Scripts/Debug/rear_axle_tester.gd" id="3_3m77p"]
+[ext_resource type="Script" uid="uid://hdytpe6qfvb2" path="res://scripts/Debug/motor_tester.gd" id="1_f6qbe"]
+[ext_resource type="Script" uid="uid://cpuah64ddy6d4" path="res://scripts/Debug/car_module_tests.gd" id="2_dl8kx"]
+[ext_resource type="Script" uid="uid://be5ydbb5pfstl" path="res://scripts/Debug/rear_axle_tester.gd" id="3_3m77p"]
+[ext_resource type="Script" uid="uid://djgdwi2midft4" path="res://scripts/Debug/transmission_tester.gd" id="4_1a8xn"]
 
 [sub_resource type="Resource" id="Resource_6o7tj"]
 script = ExtResource("1_f6qbe")
@@ -29,9 +30,16 @@ test_delta = 0.017
 rpm_print_gap = 200.0
 metadata/_custom_type_script = "uid://be5ydbb5pfstl"
 
+[sub_resource type="Resource" id="Resource_3m77p"]
+script = ExtResource("4_1a8xn")
+gear_ratios = Array[float]([0.02, 0.04, 0.08, 0.16, 0.32, 0.5])
+clutch_response_time = 0.5
+metadata/_custom_type_script = "uid://djgdwi2midft4"
+
 [node name="ModuleTestChamber" type="Node3D" unique_id=327370377]
 
 [node name="Tester" type="Node" parent="." unique_id=1145658516]
 script = ExtResource("2_dl8kx")
 motor_tests = SubResource("Resource_6o7tj")
 rear_axle_tests = SubResource("Resource_dl8kx")
+transmission_tests = SubResource("Resource_3m77p")
