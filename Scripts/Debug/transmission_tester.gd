@@ -8,9 +8,10 @@ var rear_axle: RearAxle
 @export var clutch_response_time: float
 
 @export var test_delta: float
-@export var rpm_print_gap: float
 
 var _log_file: FileAccess
+
+const EPSILON: float = 0.0000001
 
 func run(log_file: FileAccess) -> bool:
 	_log_file = log_file
@@ -42,6 +43,12 @@ func run(log_file: FileAccess) -> bool:
 		test_pass = test_get_ideal_rpm()
 	if test_pass:
 		msg = utils.get_test_passed_str(test_get_ideal_rpm)
+		print(msg)
+		_log_file.store_string(msg)
+	if test_pass:
+		test_pass = test_transmit_energy()
+	if test_pass:
+		msg = utils.get_test_passed_str(test_transmit_energy)
 		print(msg)
 		_log_file.store_string(msg)
 	return test_pass
@@ -144,7 +151,7 @@ func test_get_ideal_rpm() -> bool:
 	ideal_rpm = transmission._get_ideal_rpm(1.0, 1.0, 1.0, 0.5, 1.0)
 	var expected_ideal_rpm: float = sqrt(2.0 / (1.0 + pow(transmission.gear_ratios[transmission.current_gear_ratio_index], 2)))
 	_log_file.store_string("Get ideal RPM dummy case with gear ratio %f. Expected %f, got %f.\n" % [transmission.gear_ratios[transmission.current_gear_ratio_index], expected_ideal_rpm, ideal_rpm])
-	if abs(expected_ideal_rpm - ideal_rpm) > 0.0002:
+	if abs(expected_ideal_rpm - ideal_rpm) > EPSILON:
 		var errmsg: String = "FAILED: ideal RPM failed dummy case with adjusted gear ratio. Expected %f, got %f.\n\n" % [expected_ideal_rpm, ideal_rpm]
 		printerr(errmsg)
 		_log_file.store_string(errmsg)
@@ -153,7 +160,7 @@ func test_get_ideal_rpm() -> bool:
 	ideal_rpm = transmission._get_ideal_rpm(2000.0, 150.0, 4.0, 1.0, 0.3)
 	expected_ideal_rpm = 2000.2351069
 	_log_file.store_string("Get ideal RPM:\n\tProposed Motor RPM: %f\n\tProposed Rear Axle RPM: %f\n\tMotor Flywheel Weight: %f\n\tRear Wheel Radius: %f\n\tRear Wheel Weight: %f\n\tExpected: %f, got: %f\n" % [2000.0, 150.0, 4.0, 0.3, 1.0, expected_ideal_rpm, ideal_rpm])
-	if abs(expected_ideal_rpm - ideal_rpm) > 0.0002:
+	if abs(expected_ideal_rpm - ideal_rpm) > EPSILON:
 		var errmsg: String = "FAILED: ideal RPM failed realistic case. Expected %f, got %f.\n\n" % [expected_ideal_rpm, ideal_rpm]
 		printerr(errmsg)
 		_log_file.store_string(errmsg)
@@ -163,7 +170,7 @@ func test_get_ideal_rpm() -> bool:
 	ideal_rpm = transmission._get_ideal_rpm(2000.0, 150.0, 4.0, 1.0, 0.3)
 	expected_ideal_rpm = 1999.1019576
 	_log_file.store_string("Get ideal RPM:\n\tProposed Motor RPM: %f\n\tProposed Rear Axle RPM: %f\n\tMotor Flywheel Weight: %f\n\tRear Wheel Radius: %f\n\tRear Wheel Weight: %f\n\tExpected: %f, got: %f\n" % [2000.0, 150.0, 4.0, 0.3, 1.0, expected_ideal_rpm, ideal_rpm])
-	if abs(expected_ideal_rpm - ideal_rpm) > 0.0002:
+	if abs(expected_ideal_rpm - ideal_rpm) > EPSILON:
 		var errmsg: String = "FAILED: ideal RPM failed realistic case with higher gear ratio. Expected %f, got %f.\n\n" % [expected_ideal_rpm, ideal_rpm]
 		printerr(errmsg)
 		_log_file.store_string(errmsg)
@@ -173,10 +180,72 @@ func test_get_ideal_rpm() -> bool:
 	ideal_rpm = transmission._get_ideal_rpm(4000.0, 5000.0, 4.0, 1.0, 3.0)
 	expected_ideal_rpm = 7776.2837033
 	_log_file.store_string("Get ideal RPM:\n\tProposed Motor RPM: %f\n\tProposed Rear Axle RPM: %f\n\tMotor Flywheel Weight: %f\n\tRear Wheel Radius: %f\n\tRear Wheel Weight: %f\n\tExpected: %f, got: %f\n" % [2000.0, 150.0, 4.0, 0.3, 1.0, expected_ideal_rpm, ideal_rpm])
-	if abs(expected_ideal_rpm - ideal_rpm) > 0.0002:
+	if abs(expected_ideal_rpm - ideal_rpm) > EPSILON:
 		var errmsg: String = "FAILED: ideal RPM failed realistic case with higher gear ratio. Expected %f, got %f.\n\n" % [expected_ideal_rpm, ideal_rpm]
 		printerr(errmsg)
 		_log_file.store_string(errmsg)
 		return false
 	transmission.current_gear_ratio_index = 0
+	return true
+func test_transmit_energy() -> bool:
+	motor.set_true_rpm(4000.0)
+	rear_axle.set_true_rpm(400.0)
+	var motor_proposed_rpm: float = 4500.0
+	var rear_axle_proposed_rpm: float = 400.0
+	var test_pass: bool = true
+	# Set clutch to be fully engaged
+	transmission._clutch_state = 1.0
+	# Expect RPMs to not change
+	transmission.transmit_energy(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
+	_log_file.store_string("Transmit energy with clutch fully engaged: \n\tProposed Motor RPM: %f, Resulting RPM: %f\n\tProposed Rear Axle RPM: %f, Resulting RPM: %f\n" % [motor_proposed_rpm, motor.true_rpm, rear_axle_proposed_rpm, rear_axle.true_rpm])
+	if motor_proposed_rpm != motor.true_rpm:
+		test_pass = false
+		var errmsg: String = "FAILED: motor has incorrect RPM. Expected %f, got %f\n\n" % [motor_proposed_rpm, motor.true_rpm]
+		printerr(errmsg)
+		_log_file.store_string(errmsg)
+	if rear_axle_proposed_rpm != rear_axle.true_rpm:
+		test_pass = false
+		var errmsg: String = "FAILED: rear axle has incorrect RPM. Expected %f, got %f\n\n" % [rear_axle_proposed_rpm, rear_axle.true_rpm]
+		printerr(errmsg)
+		_log_file.store_string(errmsg)
+	if not test_pass:
+		return false
+	# Set clutch to be fully disengaged
+	transmission._clutch_state = 0.0
+	motor.set_true_rpm(4000.0)
+	rear_axle.set_true_rpm(80.0)
+	transmission.transmit_energy(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
+	_log_file.store_string("Transmit energy with clutch fully disengaged: \n\tProposed Motor RPM: %f, Resulting RPM: %f\n\tProposed Rear Axle RPM: %f, Resulting RPM: %f\n" % [motor_proposed_rpm, motor.true_rpm, rear_axle_proposed_rpm, rear_axle.true_rpm])
+	if abs(motor.true_rpm * transmission.gear_ratios[transmission.current_gear_ratio_index] - rear_axle.true_rpm) > EPSILON:
+		var errmsg: String = "FAILED: rear axle RPM is not accurate. Expected %f, got %f\n\n" % [motor.true_rpm * transmission.gear_ratios[transmission.current_gear_ratio_index], rear_axle.true_rpm]
+		printerr(errmsg)
+		_log_file.store_string(errmsg)
+		return false
+	# Test engaging clutch
+	transmission._clutch_state = 1.0
+	motor.set_true_rpm(4000.0)
+	rear_axle.set_true_rpm(80.0)
+	rear_axle_proposed_rpm = 80.0
+	var num_iterations: int = ceilf(transmission.clutch_response_time / test_delta) as int
+	for i in range(1, num_iterations+1):
+		transmission.update_clutch_state(0, test_delta)
+		transmission.transmit_energy(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
+		rear_axle_proposed_rpm = rear_axle.true_rpm
+		_log_file.store_string("Transmit energy with clutch being disengaged.\n\tTime since disengagement: %f\n\tMotor RPM: %f\n\t Rear Axle RPM: %f\n" % [test_delta * i, motor.true_rpm, rear_axle.true_rpm])
+	# Test negative gear ratio
+	var old_ratio: float = transmission.gear_ratios[transmission.current_gear_ratio_index]
+	transmission.gear_ratios[transmission.current_gear_ratio_index] = -0.02
+	transmission._clutch_state = 0.0
+	motor.set_true_rpm(0.0)
+	rear_axle.set_true_rpm(0.0)
+	rear_axle_proposed_rpm = 0.0
+	motor_proposed_rpm = 100.0
+	transmission.transmit_energy(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
+	_log_file.store_string("Transmit energy with negative gear ratio: Gear Ratio: %f, Motor RPM: %f, Rear Axle RPM: %f\n" % [transmission.gear_ratios[transmission.current_gear_ratio_index], motor.true_rpm, rear_axle.true_rpm])
+	if rear_axle.true_rpm >= 0.0:
+		var errmsg: String = "FAILED: rear axle RPM should be negative, is actually %f\n\n" % rear_axle.true_rpm
+		printerr(errmsg)
+		_log_file.store_string(errmsg)
+		return false
+	transmission.gear_ratios[transmission.current_gear_ratio_index] = old_ratio
 	return true
