@@ -1352,15 +1352,79 @@ PASSED: test_propose_rpm passed all tests.
 PASSED: RearAxle (drivetrain side) passed all tests.
 STARTING: Transmission tests
 
-Shifting gear up one time: was on index 0. Expected index 1,got 1
-Shifting gear up one time: was on index 1. Expected index 2,got 2
-Shifting gear up one time: was on index 2. Expected index 3,got 3
-Shifting gear up one time: was on index 3. Expected index 4,got 4
-Shifting gear up one time: was on index 4. Expected index 5,got 5
-Shifting gear up one time when at maximum: was on index 5. Expected index 5,got 5
-Shifting gear down one time: was on index 5. Expected index 4,got 4
-Shifting gear down one time: was on index 4. Expected index 3,got 3
-Shifting gear down one time: was on index 3. Expected index 2,got 2
-Shifting gear down one time: was on index 2. Expected index 1,got 1
-Shifting gear down one time: was on index 1. Expected index 0,got 0
-Shifting gear down one time when at zero: was on index 0. Expected index 0,got 0
+Shifting gear up one time: was on index 0. Expected index 1, got 1
+Shifting gear up one time: was on index 1. Expected index 2, got 2
+Shifting gear up one time: was on index 2. Expected index 3, got 3
+Shifting gear up one time: was on index 3. Expected index 4, got 4
+Shifting gear up one time: was on index 4. Expected index 5, got 5
+Shifting gear up one time when at maximum: was on index 5. Expected index 5, got 5
+Shifting gear down one time: was on index 5. Expected index 4, got 4
+Shifting gear down one time: was on index 4. Expected index 3, got 3
+Shifting gear down one time: was on index 3. Expected index 2, got 2
+Shifting gear down one time: was on index 2. Expected index 1, got 1
+Shifting gear down one time: was on index 1. Expected index 0, got 0
+Shifting gear down one time when at zero: was on index 0. Expected index 0, got 0
+PASSED: test_update_gear passed all tests
+
+Updating clutch state: input: true, state: 0.034000
+Updating clutch state: input: true, state: 0.068000
+Updating clutch state: input: true, state: 0.102000
+Updating clutch state: input: true, state: 0.136000
+Updating clutch state: input: true, state: 0.170000
+Updating clutch state: input: true, state: 0.204000
+Updating clutch state: input: true, state: 0.238000
+Updating clutch state: input: true, state: 0.272000
+Updating clutch state: input: true, state: 0.306000
+Updating clutch state: input: true, state: 0.340000
+Updating clutch state: input: true, state: 0.374000
+Updating clutch state: input: true, state: 0.408000
+Updating clutch state: input: true, state: 0.442000
+Updating clutch state: input: true, state: 0.476000
+Updating clutch state: input: true, state: 0.510000
+Updating clutch state: input: true, state: 0.544000
+Updating clutch state: input: true, state: 0.578000
+Updating clutch state: input: true, state: 0.612000
+Updating clutch state: input: true, state: 0.646000
+Updating clutch state: input: true, state: 0.680000
+Updating clutch state: input: true, state: 0.714000
+Updating clutch state: input: true, state: 0.748000
+Updating clutch state: input: true, state: 0.782000
+Updating clutch state: input: true, state: 0.816000
+Updating clutch state: input: true, state: 0.850000
+Updating clutch state: input: true, state: 0.884000
+Updating clutch state: input: true, state: 0.918000
+Updating clutch state: input: true, state: 0.952000
+Updating clutch state: input: true, state: 0.986000
+Updating clutch state: input: true, state: 1.000000
+Updating clutch state: input: false, state: 0.966000
+Updating clutch state: input: false, state: 0.932000
+Updating clutch state: input: false, state: 0.898000
+Updating clutch state: input: false, state: 0.864000
+Updating clutch state: input: false, state: 0.830000
+Updating clutch state: input: false, state: 0.796000
+Updating clutch state: input: false, state: 0.762000
+Updating clutch state: input: false, state: 0.728000
+Updating clutch state: input: false, state: 0.694000
+Updating clutch state: input: false, state: 0.660000
+Updating clutch state: input: false, state: 0.626000
+Updating clutch state: input: false, state: 0.592000
+Updating clutch state: input: false, state: 0.558000
+Updating clutch state: input: false, state: 0.524000
+Updating clutch state: input: false, state: 0.490000
+Updating clutch state: input: false, state: 0.456000
+Updating clutch state: input: false, state: 0.422000
+Updating clutch state: input: false, state: 0.388000
+Updating clutch state: input: false, state: 0.354000
+Updating clutch state: input: false, state: 0.320000
+Updating clutch state: input: false, state: 0.286000
+Updating clutch state: input: false, state: 0.252000
+Updating clutch state: input: false, state: 0.218000
+Updating clutch state: input: false, state: 0.184000
+Updating clutch state: input: false, state: 0.150000
+Updating clutch state: input: false, state: 0.116000
+Updating clutch state: input: false, state: 0.082000
+Updating clutch state: input: false, state: 0.048000
+Updating clutch state: input: false, state: 0.014000
+Updating clutch state: input: false, state: 0.000000
+PASSED: test_update_clutch_state passed all tests
+

@@ -34,6 +34,7 @@ metadata/_custom_type_script = "uid://be5ydbb5pfstl"
 script = ExtResource("4_1a8xn")
 gear_ratios = Array[float]([0.02, 0.04, 0.08, 0.16, 0.32, 0.5])
 clutch_response_time = 0.5
+test_delta = 0.017
 metadata/_custom_type_script = "uid://djgdwi2midft4"
 
 [node name="ModuleTestChamber" type="Node3D" unique_id=327370377]
