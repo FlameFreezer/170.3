@@ -1596,8 +1596,5 @@ PASSED: slip point location test (cornering force only)
 
 PASSED: catch point location test (tires decelerate car, cornering force only)
 
-PASSED: simultaneous cornering and acceleration (tires decelerate car)
-
-PASSED: get_force_output passed all tests.
-
-PASSED: RearAxle (physics side) passed all tests.
+rear_axle_tester.test_get_force_output: starting simultaneous cornering and acceleration load test at velocity angle -57.000000
+FAILED: simultaneous cornering and acceleration (tires decelerate car): get_force_output failed to stop car given axle rpm 0.000000 and vehicle speed 0.012790 in direction -57.000000.

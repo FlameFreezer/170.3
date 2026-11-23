@@ -406,22 +406,36 @@ func test_get_force_output() -> bool:
 		_log_file.store_string(msg)
 	
 	# test simultaneous cornering and acceleration loads
-	var wheel_speed_frame: float = rear_axle_physics.wheel_diameter * PI / 60 * test_delta
-	current_vehicle_velocity = Vector2(-utils.snap(wheel_speed_frame), -utils.snap(wheel_speed_frame))
-	rear_axle_physics.true_rpm = 0.0
-	while (abs(utils.snap(current_vehicle_velocity.x) + utils.snap(current_vehicle_velocity.y)) < abs(utils.snap(max_static_friction_speed_change * pow(test_delta, 2)))):
+	var rpm_to_distance_per_frame: float = rear_axle_physics.wheel_diameter * PI / 60 * test_delta
+	var curr_velocity_direction: float = -PI / 3 + PI / 60# angle of car velocity in radians
+	while (curr_velocity_direction <= PI / 3):
+		msg = "rear_axle_tester.test_get_force_output: starting simultaneous cornering and acceleration load test at velocity angle %f\n" % rad_to_deg(curr_velocity_direction)
+		_log_file.store_string(msg)
+		current_vehicle_velocity = Vector2(-utils.snap(rpm_to_distance_per_frame * cos(curr_velocity_direction)), -utils.snap(rpm_to_distance_per_frame * sin(curr_velocity_direction)))
+		rear_axle_physics.true_rpm = 0.0
+		while (abs(utils.snap(current_vehicle_velocity.length())) < abs(utils.snap(max_static_friction_speed_change * pow(test_delta, 2)))):
+			output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+			var expected_output: Vector2 = Vector2(utils.snap(current_vehicle_velocity.x * chassis_mass * -1), utils.snap(current_vehicle_velocity.y * chassis_mass * -1))
+			if output != expected_output:
+				to_ret = false
+				msg = "FAILED: simultaneous cornering and acceleration (tires decelerate car): get_force_output failed to stop car given axle rpm %f and vehicle speed %f in direction %f.\n" % [current_tire_rpm, current_vehicle_velocity.length(), rad_to_deg(curr_velocity_direction)]
+				printerr(msg)
+				_log_file.store_string(msg)
+				if (!continue_after_failing):
+					return to_ret
+			current_vehicle_velocity -= Vector2(utils.snap(rpm_to_distance_per_frame * cos(curr_velocity_direction)), utils.snap(rpm_to_distance_per_frame * sin(curr_velocity_direction)))
 		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
-		var expected_output: Vector2 = Vector2(utils.snap(current_vehicle_velocity.x * chassis_mass * -1), utils.snap(current_vehicle_velocity.y * chassis_mass * -1))
-		if output != expected_output:
+		if (!rear_axle_physics.slipping):
 			to_ret = false
-			msg = "FAILED: simultaneous cornering and acceleration (tires decelerate car): get_force_output failed to stop car given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+			msg = "FAILED: simultaneous cornering and acceleration (tires decelerate car): tires failed to enter the slip state given axle rpm %f and vehicle speed %f in direction %f.\n" % [current_tire_rpm, current_vehicle_velocity.length(), rad_to_deg(curr_velocity_direction)]
 			printerr(msg)
 			_log_file.store_string(msg)
 			if (!continue_after_failing):
 				return to_ret
-		current_vehicle_velocity -= Vector2(utils.snap(wheel_speed_frame), utils.snap(wheel_speed_frame))
+		rear_axle_physics.slipping = false
+		curr_velocity_direction += PI / 60
 	if (to_ret):
-		msg = "PASSED: simultaneous cornering and acceleration (tires decelerate car)\n\n"
+		msg = "PASSED: simultaneous cornering and acceleration at various angles (tires decelerate car)\n\n"
 		print(msg)
 		_log_file.store_string(msg)
 	return true

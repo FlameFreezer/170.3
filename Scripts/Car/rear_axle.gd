@@ -90,9 +90,9 @@ func get_force_output(axle_movement_vec: Vector2, car_direction: Vector2, delta:
 	var delta_squared: float = pow(delta, 2)
 	
 	# handle slip state changes
-	if (!slipping && (acceleration_demand + cornering_demand) > max_static_friction_force * delta_squared):
+	if (!slipping && sqrt(pow(acceleration_demand, 2) + pow(cornering_demand, 2)) > max_static_friction_force * delta_squared):
 		slipping = true;
-	elif(slipping && (acceleration_demand + cornering_demand) < max_kinetic_friction_force * delta_squared):
+	elif(slipping && sqrt(pow(acceleration_demand, 2) + pow(cornering_demand, 2)) < max_kinetic_friction_force * delta_squared):
 		slipping = false;
 	
 	# generate and return force vector

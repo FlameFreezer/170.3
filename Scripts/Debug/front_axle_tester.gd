@@ -11,7 +11,7 @@ var _log_file: FileAccess
 func run(log_file: FileAccess) -> bool:
 	_log_file = log_file
 	var test_pass: bool = true
-	front_axle = FrontAxle.new(chassis_mass, 0.0, 0.0, static_friction_coeff, kinetic_friction_coeff, 45, 0)
+	front_axle = FrontAxle.new(chassis_mass, static_friction_coeff, kinetic_friction_coeff, 45, 0)
 	var msg: String = "STARTING: front axle get force output tests\n\n"
 	print(msg)
 	_log_file.store_string(msg)
@@ -50,4 +50,21 @@ func test_get_force_output() -> bool:
 		printerr(errmsg)
 		_log_file.store_string(errmsg)
 		return false
+	
+	# run tests that should return 0 force (straight steering + straight forward velocity)
+	
+	# run tests that should return 0 force (angled steering + equally angled velocity)
+	
+	# verify location and behavior of slip point (straight steering + pure normal load)
+	
+	# verify location and behavior of catch point (straight steering + pure normal load)
+	
+	# verify location and behavior of slip point (angled steering + straight forward velocity)
+	
+	# verify location and behavior of catch point (angled steering + straight forward velocity)
+	
+	# verify location and behavior of slip point (angled steering + non-equally angled velocity)
+	
+	# verify location and behavior of catch point (angled steering + non-equally angled velocity)
+	
 	return test_pass

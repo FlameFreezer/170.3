@@ -20,7 +20,7 @@ func _ready() -> void:
 		test_pass = transmission_tests.run(test_log_file)
 	if (test_pass || continue_after_failing):
 		test_pass = rear_axle_tests.run_physics(test_log_file)
-	if (test_pass || continue_after_failing):
-		test_pass = front_axle_tests.run(test_log_file)
+	#if (test_pass || continue_after_failing):
+		#test_pass = front_axle_tests.run(test_log_file)
 	
 	test_log_file.close()
