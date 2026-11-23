@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://gudvyd7cl1qt"]
 
-[ext_resource type="Script" uid="uid://hdytpe6qfvb2" path="res://Scripts/Debug/motor_tester.gd" id="1_f6qbe"]
-[ext_resource type="Script" uid="uid://cpuah64ddy6d4" path="res://Scripts/Debug/car_module_tests.gd" id="2_dl8kx"]
-[ext_resource type="Script" uid="uid://be5ydbb5pfstl" path="res://Scripts/Debug/rear_axle_tester.gd" id="3_3m77p"]
-[ext_resource type="Script" uid="uid://djgdwi2midft4" path="res://Scripts/Debug/transmission_tester.gd" id="4_1a8xn"]
+[ext_resource type="Script" uid="uid://hdytpe6qfvb2" path="res://scripts/Debug/motor_tester.gd" id="1_f6qbe"]
+[ext_resource type="Script" uid="uid://cpuah64ddy6d4" path="res://scripts/Debug/car_module_tests.gd" id="2_dl8kx"]
+[ext_resource type="Script" uid="uid://be5ydbb5pfstl" path="res://scripts/Debug/rear_axle_tester.gd" id="3_3m77p"]
+[ext_resource type="Script" uid="uid://djgdwi2midft4" path="res://scripts/Debug/transmission_tester.gd" id="4_1a8xn"]
 
 [sub_resource type="Resource" id="Resource_6o7tj"]
 script = ExtResource("1_f6qbe")

@@ -353,7 +353,6 @@ func test_get_force_output() -> bool:
 	current_tire_rpm = 0
 	rear_axle_physics.set_true_rpm(current_tire_rpm)
 	current_vehicle_velocity = Vector2(utils.snap(-1 * rear_axle_physics.wheel_diameter * PI / 60 * test_delta), 0)
-	var _count: int = 0
 	while (abs(current_vehicle_velocity.x) < abs(max_static_friction_speed_change * pow(test_delta, 2))):
 		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 		var expected_force: Vector2 = Vector2(utils.snap(current_vehicle_velocity.x * rear_axle_physics.chassis_mass * -1), -0.0)
@@ -365,7 +364,6 @@ func test_get_force_output() -> bool:
 			if (!continue_after_failing):
 				return to_ret
 		current_vehicle_velocity.x -= utils.snap(rear_axle_physics.wheel_diameter * PI / 60 * test_delta)
-		_count += 1
 	rear_axle_physics.set_true_rpm(current_tire_rpm)
 	output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 	if (!rear_axle_physics.slipping):
@@ -382,7 +380,47 @@ func test_get_force_output() -> bool:
 		_log_file.store_string(msg)
 	
 	# verify location and behavior of catch point (cornering force only)
+	while (abs(current_vehicle_velocity.x) > abs(max_kinetic_friction_speed_change * pow(test_delta, 2))):
+		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		var expected_force: Vector2 = Vector2(utils.snap(rear_axle_physics.max_kinetic_friction_force * pow(test_delta, 2) * (1.0 - rear_axle_physics.kinetic_friction_accel_factor)), 0)
+		if (expected_force != output):
+			to_ret = false
+			msg = "FAILED: catch point location test (tires decelerate car, cornering force only): get_force_output didn't output the maximum possible force while slipping given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_vehicle_velocity.x += utils.snap(rear_axle_physics.wheel_diameter * PI / 60 * test_delta)
+	output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+	if (rear_axle_physics.slipping):
+		to_ret = false
+		msg = "FAILED: catch point location test (tires decelerate car, cornering force only): get_force_output failed to exit the slip state given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+		printerr(msg)
+		_log_file.store_string(msg)
+		if (!continue_after_failing):
+			return to_ret
 	
+	if (to_ret):
+		msg = "PASSED: catch point location test (tires decelerate car, cornering force only)\n\n"
+		print(msg)
+		_log_file.store_string(msg)
 	# test simultaneous cornering and acceleration loads
-	
+	var wheel_speed_frame: float = rear_axle_physics.wheel_diameter * PI / 60 * test_delta
+	current_vehicle_velocity = Vector2(-utils.snap(wheel_speed_frame), -utils.snap(wheel_speed_frame))
+	rear_axle_physics.true_rpm = 0.0
+	while utils.snap(current_vehicle_velocity.x) < max_static_friction_speed_change && utils.snap(current_vehicle_velocity.y) < max_static_friction_speed_change:
+		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		var expected_output: Vector2 = Vector2(utils.snap(current_vehicle_velocity.x * chassis_mass * -1), utils.snap(current_vehicle_velocity.y * chassis_mass * -1))
+		if output != expected_output:
+			to_ret = false
+			msg = "FAILED: simultaneous cornering and acceleration (tires decelerate car): get_force_output failed to stop car given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_vehicle_velocity -= Vector2(utils.snap(wheel_speed_frame), utils.snap(wheel_speed_frame))
+	if (to_ret):
+		msg = "PASSED: simultaneous cornering and acceleration (tires decelerate car)\n\n"
+		print(msg)
+		_log_file.store_string(msg)
 	return true
