@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://b8ymt0hb786jy"]
+
+[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/Prefabs/floor_tile.tscn" id="1_4d7ev"]
+[ext_resource type="Script" uid="uid://cvno8qawyjit7" path="res://Scripts/Debug/physics_test_cube.gd" id="2_uxq8a"]
+[ext_resource type="Script" uid="uid://dgjem74wjcuun" path="res://Scripts/UI/physics_cube_hud_txt.gd" id="3_w00ii"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_le341"]
+friction = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_le341"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_le341"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oajxw"]
+
+[node name="PhysicsTestCube" type="Node3D" unique_id=1302635741]
+
+[node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("1_4d7ev")]
+transform = Transform3D(128, 0, 0, 0, 128, 0, 0, 0, 128, -0.011047363, 0, -0.014404297)
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=795832605]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5522766, 0.007162094)
+physics_material_override = SubResource("PhysicsMaterial_le341")
+script = ExtResource("2_uxq8a")
+force_to_apply = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=430232598]
+mesh = SubResource("BoxMesh_le341")
+surface_material_override/0 = SubResource("StandardMaterial3D_le341")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=723453344]
+shape = SubResource("BoxShape3D_oajxw")
+
+[node name="Camera3D" type="Camera3D" parent="RigidBody3D" unique_id=1570789865]
+transform = Transform3D(-4.371139e-08, 0.2079117, -0.9781476, 0, 0.9781476, 0.2079117, 1, 9.088109e-09, -4.275619e-08, -3.561, 1.941, 0)
+
+[node name="HUD" type="Control" parent="." unique_id=1844573384]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Text" type="Label" parent="HUD" unique_id=1941663895 node_paths=PackedStringArray("cube")]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("3_w00ii")
+cube = NodePath("../../RigidBody3D")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=349020377]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.58062, 0)
+light_energy = 14.742
+omni_range = 197.067

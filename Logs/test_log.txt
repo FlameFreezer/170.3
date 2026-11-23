@@ -1582,3 +1582,18 @@ Transmit energy with clutch being disengaged.
 Transmit energy with negative gear ratio: Gear Ratio: -0.020000, Motor RPM: 99.962521, Rear Axle RPM: -1.999250
 PASSED: test_transmit_energy passed all tests
 
+PASSED: no acceleration needed tests
+
+PASSED: slip point location test (tires accelerate car)
+
+PASSED: catch point location test (tires accelerate car)
+
+PASSED: slip point location test (tires decelerate car)
+
+PASSED: catch point location test (tires decelerate car)
+
+PASSED: slip point location test (cornering force only)
+
+PASSED: get_force_output passed all tests.
+
+PASSED: RearAxle (physics side) passed all tests.

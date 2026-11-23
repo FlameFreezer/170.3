@@ -26,12 +26,6 @@ var init_starting_rpm: float = 0.0
 
 var _log_file: FileAccess
 
-# functions to test:
-# propose_rpm
-
-# get_force_output (verify transmission first)
-
-
 # Called when the node enters the scene tree for the first time.
 func run(log_file: FileAccess) -> bool:
 	_log_file = log_file
@@ -68,6 +62,22 @@ func run(log_file: FileAccess) -> bool:
 	
 	# TODO: test physics sim functionality
 	return test_pass
+
+func run_physics(log_file: FileAccess) -> bool:
+	_log_file = log_file
+	rear_axle_physics = RearAxle.new(chassis_mass, front_axle_distance_from_com, rear_axle_distance_from_com, static_friction_coeff, kinetic_friction_coeff, kinetic_friction_accel_factor, wheel_mass, wheel_diameter, drag_factor, handbrake_strength, init_starting_rpm)
+	var to_ret: bool = true
+	var msg: String
+	to_ret = test_get_force_output()
+	if (to_ret):
+		msg = "PASSED: get_force_output passed all tests.\n\n"
+		_log_file.store_string(msg)
+		print(msg)
+		
+		msg = "PASSED: RearAxle (physics side) passed all tests.\n"
+		_log_file.store_string(msg)
+		print(msg)
+	return to_ret
 
 func test_set_true_rpm() -> bool:
 	var to_ret: bool = true
@@ -194,3 +204,185 @@ func run_spindown_test(starting_rpm: float, handbrake_state: float) -> bool:
 			if (!continue_after_failing):
 				return to_ret
 	return to_ret
+
+func test_get_force_output() -> bool:
+	# test a bunch of cases that should return zero acceleration
+	var to_ret: bool = true
+	var current_tire_rpm: float = -500
+	var current_vehicle_velocity: Vector2 = Vector2(0, -1) * utils.snap(rear_axle_physics.wheel_diameter * PI * current_tire_rpm / 60 * test_delta)
+	var current_vehicle_direction: Vector2 = Vector2(0, -1)
+	var msg: String
+	var output: Vector2
+	rear_axle_physics.update_handbrake(0)
+	while (current_tire_rpm <= 500):
+		rear_axle_physics.set_true_rpm(current_tire_rpm)
+		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		if (output != Vector2.ZERO):
+			to_ret = false
+			msg = "FAILED: no acceleration needed test: get_force_output returned a non-zero acceleration value given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_tire_rpm += 1
+		current_vehicle_velocity = Vector2(0, -1) * utils.snap(rear_axle_physics.wheel_diameter * PI * current_tire_rpm / 60 * test_delta)
+	if (to_ret):
+		msg = "PASSED: no acceleration needed tests\n\n"
+		print(msg)
+		_log_file.store_string(msg)
+	
+	# verify location and behavior of slip point (tires accelerate car)
+	current_tire_rpm = 1
+	current_vehicle_velocity = Vector2.ZERO
+	var max_static_friction_speed_change: float = utils.snap(rear_axle_physics.max_static_friction_force / rear_axle_physics.chassis_mass)
+	while (current_tire_rpm < max_static_friction_speed_change / (rear_axle_physics.wheel_diameter * PI)):
+		rear_axle_physics.set_true_rpm(current_tire_rpm)
+		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		var expected_force: float = utils.snap(utils.snap(rear_axle_physics.wheel_diameter * PI * current_tire_rpm / 60 * test_delta) * rear_axle_physics.chassis_mass)
+		var output_force: float = utils.snap(output.length())
+		if (expected_force != output_force):
+			to_ret = false
+			msg = "FAILED: slip point location test (tires accelerate car): get_force_output failed to match vehicle speed to tire motion given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_tire_rpm += 1
+	rear_axle_physics.set_true_rpm(current_tire_rpm)
+	output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+	if (!rear_axle_physics.slipping):
+		to_ret = false
+		msg = "FAILED: slip point location test (tires accelerate car): get_force_output failed to enter the slip state given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+		printerr(msg)
+		_log_file.store_string(msg)
+		if (!continue_after_failing):
+			return to_ret
+	
+	if (to_ret):
+		msg = "PASSED: slip point location test (tires accelerate car)\n\n"
+		print(msg)
+		_log_file.store_string(msg)
+		
+	# verify location and behavior of catch point (tires accelerate car)
+	var max_kinetic_friction_speed_change: float = utils.snap(rear_axle_physics.max_kinetic_friction_force / rear_axle_physics.chassis_mass)
+	while (current_tire_rpm > max_kinetic_friction_speed_change / (rear_axle_physics.wheel_diameter * PI)):
+		rear_axle_physics.set_true_rpm(current_tire_rpm)
+		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		var expected_force: float = utils.snap(rear_axle_physics.max_kinetic_friction_force * pow(test_delta, 2))
+		var output_force: float = utils.snap(output.length())
+		if (expected_force != output_force):
+			to_ret = false
+			msg = "FAILED: catch point location test (tires accelerate car): get_force_output didn't output the maximum possible force while slipping given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_tire_rpm -= 1
+	rear_axle_physics.set_true_rpm(current_tire_rpm)
+	output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+	if (rear_axle_physics.slipping):
+		to_ret = false
+		msg = "FAILED: catch point location test (tires accelerate car): get_force_output failed to exit the slip state given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+		printerr(msg)
+		_log_file.store_string(msg)
+		if (!continue_after_failing):
+			return to_ret
+	
+	if (to_ret):
+		msg = "PASSED: catch point location test (tires accelerate car)\n\n"
+		print(msg)
+		_log_file.store_string(msg)
+	
+	# verify location and behavior of slip point (tires decelerate car)
+	current_tire_rpm = 0
+	rear_axle_physics.set_true_rpm(current_tire_rpm)
+	current_vehicle_velocity = Vector2(0, utils.snap(-1 * rear_axle_physics.wheel_diameter * PI / 60 * test_delta))
+	while (abs(current_vehicle_velocity.y) < abs(max_static_friction_speed_change * pow(test_delta, 2))):
+		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		var expected_force: Vector2 = Vector2(0, utils.snap(current_vehicle_velocity.y * rear_axle_physics.chassis_mass * -1))
+		if (expected_force != output):
+			to_ret = false
+			msg = "FAILED: slip point location test (tires decelerate car): get_force_output failed to match vehicle speed to tire motion given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_vehicle_velocity.y -= utils.snap(rear_axle_physics.wheel_diameter * PI / 60 * test_delta)
+	rear_axle_physics.set_true_rpm(current_tire_rpm)
+	output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+	if (!rear_axle_physics.slipping):
+		to_ret = false
+		msg = "FAILED: slip point location test (tires decelerate car): get_force_output failed to enter the slip state given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+		printerr(msg)
+		_log_file.store_string(msg)
+		if (!continue_after_failing):
+			return to_ret
+	
+	if (to_ret):
+		msg = "PASSED: slip point location test (tires decelerate car)\n\n"
+		print(msg)
+		_log_file.store_string(msg)
+	
+	# verify location and behavior of catch point (tires decelerate car)
+	while (abs(current_vehicle_velocity.y) > abs(max_kinetic_friction_speed_change * pow(test_delta, 2))):
+		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		var expected_force: Vector2 = Vector2(0, utils.snap(rear_axle_physics.max_kinetic_friction_force * pow(test_delta, 2)))
+		if (expected_force != output):
+			to_ret = false
+			msg = "FAILED: catch point location test (tires decelerate car): get_force_output didn't output the maximum possible force while slipping given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_vehicle_velocity.y += utils.snap(rear_axle_physics.wheel_diameter * PI / 60 * test_delta)
+	output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+	if (rear_axle_physics.slipping):
+		to_ret = false
+		msg = "FAILED: catch point location test (tires decelerate car): get_force_output failed to exit the slip state given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+		printerr(msg)
+		_log_file.store_string(msg)
+		if (!continue_after_failing):
+			return to_ret
+	
+	if (to_ret):
+		msg = "PASSED: catch point location test (tires decelerate car)\n\n"
+		print(msg)
+		_log_file.store_string(msg)
+	
+	# verify location and behavior of slip point (cornering force only)
+	current_tire_rpm = 0
+	rear_axle_physics.set_true_rpm(current_tire_rpm)
+	current_vehicle_velocity = Vector2(utils.snap(-1 * rear_axle_physics.wheel_diameter * PI / 60 * test_delta), 0)
+	var _count: int = 0
+	while (abs(current_vehicle_velocity.x) < abs(max_static_friction_speed_change * pow(test_delta, 2))):
+		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		var expected_force: Vector2 = Vector2(utils.snap(current_vehicle_velocity.x * rear_axle_physics.chassis_mass * -1), -0.0)
+		if (expected_force != output):
+			to_ret = false
+			msg = "FAILED: slip point location test (cornering force only): get_force_output failed to match vehicle speed to tire motion given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_vehicle_velocity.x -= utils.snap(rear_axle_physics.wheel_diameter * PI / 60 * test_delta)
+		_count += 1
+	rear_axle_physics.set_true_rpm(current_tire_rpm)
+	output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+	if (!rear_axle_physics.slipping):
+		to_ret = false
+		msg = "FAILED: slip point location test (cornering force only): get_force_output failed to enter the slip state given axle rpm %f and vehicle speed %f.\n" % [current_tire_rpm, current_vehicle_velocity.length()]
+		printerr(msg)
+		_log_file.store_string(msg)
+		if (!continue_after_failing):
+			return to_ret
+	
+	if (to_ret):
+		msg = "PASSED: slip point location test (cornering force only)\n\n"
+		print(msg)
+		_log_file.store_string(msg)
+	
+	# verify location and behavior of catch point (cornering force only)
+	
+	# test simultaneous cornering and acceleration loads
+	
+	return true
