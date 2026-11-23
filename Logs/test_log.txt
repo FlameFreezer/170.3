@@ -1582,3 +1582,14 @@ Transmit energy with clutch being disengaged.
 Transmit energy with negative gear ratio: Gear Ratio: -0.020000, Motor RPM: 99.962521, Rear Axle RPM: -1.999250
 PASSED: test_transmit_energy passed all tests
 
+STARTING: front axle get force output tests
+
+Getting force output for a car which should not move.
+	Initial velocity: (0.000000, 0.000000)
+	Initial direction: (0.000000, -1.000000)
+Getting force output for a car which should not slip.
+
+Initial velocity: (0.000000, -200.000000)
+	Initial direction: (0.000000, -1.000000)
+PASSED: test_get_force_output passed all tests
+

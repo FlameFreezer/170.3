@@ -14,3 +14,6 @@ static func bool_to_string(val: bool) -> StringName:
 		return "true"
 	else: 
 		return "false"
+
+static func snap(val: float) -> float:
+	return snappedf(val, 0.00001)

@@ -46,13 +46,13 @@ func get_force_output(car_motion: Vector2, car_direction: Vector2, delta: float)
 	var wheel_normal_vec: Vector2 = Vector2(cos(global_wheel_angle - PI / 2), sin(global_wheel_angle - PI / 2)) # this will point to the right at steering angle 0
 	
 	# find cornering force demand
-	var cornering_motion: Vector2 = car_normal_vec * car_normal_vec.dot(car_motion * delta)
+	var cornering_motion: Vector2 = car_normal_vec * car_normal_vec.dot(car_motion)
 	var cornering_distance: float = cornering_motion.length()
-	var adjusted_cornering_demand: float = 2 * cornering_distance / pow(delta, 2)
+	var adjusted_cornering_demand: float = utils.snap(2 * cornering_distance / pow(delta, 2))
 	# adjusted_cornering_demand /= 1 + front_axle_distance_from_com / rear_axle_distance_from_com
 	
 	# find steering force demand
-	var slip_motion: Vector2 = wheel_normal_vec * ((car_motion - cornering_motion) * delta).dot(wheel_normal_vec)
+	var slip_motion: Vector2 = wheel_normal_vec * (car_motion - cornering_motion).dot(wheel_normal_vec)
 	var slip_distance: float = slip_motion.length()
 	var slip_demand: float = 2 * slip_distance / pow(delta, 2)
 	
