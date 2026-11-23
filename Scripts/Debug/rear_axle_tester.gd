@@ -31,7 +31,7 @@ func run(log_file: FileAccess) -> bool:
 	_log_file = log_file
 	
 	# test drivetrain sim functionality
-	rear_axle_drivetrain = RearAxle.new(chassis_mass, front_axle_distance_from_com, rear_axle_distance_from_com, static_friction_coeff, kinetic_friction_coeff, kinetic_friction_accel_factor, wheel_mass, wheel_diameter, drag_factor, handbrake_strength, init_starting_rpm)
+	rear_axle_drivetrain = RearAxle.new(chassis_mass, static_friction_coeff, kinetic_friction_coeff, kinetic_friction_accel_factor, wheel_mass, wheel_diameter, drag_factor, handbrake_strength, init_starting_rpm)
 	var msg: String = "STARTING: RearAxle (drivetrain side) tests\n\n"
 	_log_file.store_string(msg)
 	print(msg)
@@ -65,7 +65,7 @@ func run(log_file: FileAccess) -> bool:
 
 func run_physics(log_file: FileAccess) -> bool:
 	_log_file = log_file
-	rear_axle_physics = RearAxle.new(chassis_mass, front_axle_distance_from_com, rear_axle_distance_from_com, static_friction_coeff, kinetic_friction_coeff, kinetic_friction_accel_factor, wheel_mass, wheel_diameter, drag_factor, handbrake_strength, init_starting_rpm)
+	rear_axle_physics = RearAxle.new(chassis_mass, static_friction_coeff, kinetic_friction_coeff, kinetic_friction_accel_factor, wheel_mass, wheel_diameter, drag_factor, handbrake_strength, init_starting_rpm)
 	var to_ret: bool = true
 	var msg: String
 	to_ret = test_get_force_output()
@@ -404,11 +404,12 @@ func test_get_force_output() -> bool:
 		msg = "PASSED: catch point location test (tires decelerate car, cornering force only)\n\n"
 		print(msg)
 		_log_file.store_string(msg)
+	
 	# test simultaneous cornering and acceleration loads
 	var wheel_speed_frame: float = rear_axle_physics.wheel_diameter * PI / 60 * test_delta
 	current_vehicle_velocity = Vector2(-utils.snap(wheel_speed_frame), -utils.snap(wheel_speed_frame))
 	rear_axle_physics.true_rpm = 0.0
-	while utils.snap(current_vehicle_velocity.x) < max_static_friction_speed_change && utils.snap(current_vehicle_velocity.y) < max_static_friction_speed_change:
+	while (abs(utils.snap(current_vehicle_velocity.x) + utils.snap(current_vehicle_velocity.y)) < abs(utils.snap(max_static_friction_speed_change * pow(test_delta, 2)))):
 		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 		var expected_output: Vector2 = Vector2(utils.snap(current_vehicle_velocity.x * chassis_mass * -1), utils.snap(current_vehicle_velocity.y * chassis_mass * -1))
 		if output != expected_output:

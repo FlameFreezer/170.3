@@ -56,8 +56,8 @@ var elapsed_time: float
 
 # Initialize everything using the tuning variables
 func _ready() -> void:
-	rear_axle = RearAxle.new(mass, front_wheel_offset, rear_wheel_offset, rear_wheels_static_friction, rear_wheels_kinetic_friction, kinetic_friction_acceleration_factor, wheel_mass, wheel_diameter, drag_factor, handbrake_strength, starting_rpm)
-	front_axle = FrontAxle.new(mass, front_wheel_offset, rear_wheel_offset, front_wheels_static_friction, front_wheels_kinetic_friction, max_steering_angle, 0)
+	rear_axle = RearAxle.new(mass, rear_wheels_static_friction, rear_wheels_kinetic_friction, kinetic_friction_acceleration_factor, wheel_mass, wheel_diameter, drag_factor, handbrake_strength, starting_rpm)
+	front_axle = FrontAxle.new(mass, front_wheels_static_friction, front_wheels_kinetic_friction, max_steering_angle, 0)
 	motor = Motor.new(redline_rpm, flywheel_weight, cylinder_volume, starting_rpm)
 	transmission = Transmission.new(gear_ratios, clutch_response_time, starting_gear_ratio_index)
 	elapsed_time = 0
@@ -88,21 +88,13 @@ func _physics_process(delta: float) -> void:
 	transmission.transmit_energy(motor_proposed_rpm, rear_axle_proposed_rpm, motor, rear_axle)
 	var front_axle_velocity = utils.get_vector2((front_axle_pos.global_position - front_axle_last_position) / delta)
 	var rear_axle_velocity = utils.get_vector2((rear_axle_pos.global_position - rear_axle_last_position) / delta)
-	if (front_axle_velocity.length() < 0.002):
-		front_axle_velocity = Vector2(snappedf(front_axle_velocity.x, 0.001), snappedf(front_axle_velocity.y, 0.001))
-	if (rear_axle_velocity.length() < 0.002):
-		rear_axle_velocity = Vector2(snappedf(rear_axle_velocity.x, 0.001), snappedf(rear_axle_velocity.y, 0.001))
 	var current_direction = utils.get_vector2(global_transform.basis * Vector3.FORWARD)
 	var rear_force: Vector2 = rear_axle.get_force_output(rear_axle_velocity, current_direction, delta)
 	var front_force: Vector2 = front_axle.get_force_output(front_axle_velocity, current_direction, delta)
-	if (rear_force.length() < 0.002):
-		rear_force = Vector2(snappedf(rear_force.x, 0.001), snappedf(rear_force.y, 0.001))
-	if (front_force.length() < 0.002):
-		front_force = Vector2(snappedf(front_force.x, 0.001), snappedf(front_force.y, 0.001))
 	var hud_string := "motor_proposed_rpm: %f\nrear_axle_proposed_rpm: %f\nmotor_true_rpm: %f\nrear_wheels_true_rpm: %f\nrear slipping: %f\nfront slipping: %f\nrear_force: %v\nfront_force: %v\nsteering_angle: %f\ncar_direction: %v\nfront_axle_velocity: %v\nrear_axle_velocity: %v" % [motor_proposed_rpm, rear_axle_proposed_rpm, motor.true_rpm, rear_axle.true_rpm, rear_axle.slipping as int, front_axle.slipping as int, rear_force, front_force, front_axle.wheel_angle, current_direction, front_axle_velocity, rear_axle_velocity]
 	update_values.emit(hud_string)
-	apply_force(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, front_wheel_offset))
-	apply_force(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
+	# apply_impulse(Vector3(front_force.x, 0, front_force.y), Vector3(0, 0, front_wheel_offset))
+	apply_impulse(Vector3(rear_force.x, 0, rear_force.y), Vector3(0, 0, rear_wheel_offset))
 	
 	front_axle_last_position = front_axle_pos.global_position
 	rear_axle_last_position = rear_axle_pos.global_position
