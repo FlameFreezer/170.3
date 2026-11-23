@@ -19,7 +19,7 @@ func _init(in_gear_ratios: Array[float], in_clutch_response_time: float, in_gear
 
 # v---------- DRIVETRAIN SIMULATOR SECTION ----------v
 
-## Change the gear ratio to the index supplied. Prints a message if out of range, but clamps the index to a valid range.
+## Shifts gear by the number of indices indicated by the input argument. Will not go beyond the maximum index or below zero.
 func update_gear(shifter_input: int) -> void:
 	current_gear_ratio_index += shifter_input
 	if(current_gear_ratio_index >= gear_ratios.size() || current_gear_ratio_index < 0):
