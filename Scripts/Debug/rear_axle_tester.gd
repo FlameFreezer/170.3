@@ -407,13 +407,16 @@ func test_get_force_output() -> bool:
 	
 	# test simultaneous cornering and acceleration loads
 	var rpm_to_distance_per_frame: float = rear_axle_physics.wheel_diameter * PI / 60 * test_delta
-	var curr_velocity_direction: float = -PI / 3 + PI / 60# angle of car velocity in radians
-	while (curr_velocity_direction <= PI / 3):
+	var curr_velocity_direction: float = -2 * PI / 3 # angle of car velocity in radians
+	while (curr_velocity_direction <= 2 * PI / 3):
 		msg = "rear_axle_tester.test_get_force_output: starting simultaneous cornering and acceleration load test at velocity angle %f\n" % rad_to_deg(curr_velocity_direction)
 		_log_file.store_string(msg)
 		current_vehicle_velocity = Vector2(-utils.snap(rpm_to_distance_per_frame * cos(curr_velocity_direction)), -utils.snap(rpm_to_distance_per_frame * sin(curr_velocity_direction)))
 		rear_axle_physics.true_rpm = 0.0
+		var _count: int = 0
 		while (abs(utils.snap(current_vehicle_velocity.length())) < abs(utils.snap(max_static_friction_speed_change * pow(test_delta, 2)))):
+			msg = "rear_axle_tester.test_get_force_output: running test %d at angle %f\n" % [_count, rad_to_deg(curr_velocity_direction)]
+			_log_file.store_string(msg)
 			output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 			var expected_output: Vector2 = Vector2(utils.snap(current_vehicle_velocity.x * chassis_mass * -1), utils.snap(current_vehicle_velocity.y * chassis_mass * -1))
 			if output != expected_output:
@@ -423,7 +426,8 @@ func test_get_force_output() -> bool:
 				_log_file.store_string(msg)
 				if (!continue_after_failing):
 					return to_ret
-			current_vehicle_velocity -= Vector2(utils.snap(rpm_to_distance_per_frame * cos(curr_velocity_direction)), utils.snap(rpm_to_distance_per_frame * sin(curr_velocity_direction)))
+			current_vehicle_velocity -= Vector2(utils.snap(rpm_to_distance_per_frame / 5 * cos(curr_velocity_direction)), utils.snap(rpm_to_distance_per_frame / 5 * sin(curr_velocity_direction)))
+			_count += 1
 		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 		if (!rear_axle_physics.slipping):
 			to_ret = false
@@ -433,7 +437,7 @@ func test_get_force_output() -> bool:
 			if (!continue_after_failing):
 				return to_ret
 		rear_axle_physics.slipping = false
-		curr_velocity_direction += PI / 60
+		curr_velocity_direction += PI / 120
 	if (to_ret):
 		msg = "PASSED: simultaneous cornering and acceleration at various angles (tires decelerate car)\n\n"
 		print(msg)

@@ -77,17 +77,17 @@ func get_force_output(axle_movement_vec: Vector2, car_direction: Vector2, delta:
 	# determine ground speed of wheels from rpm
 	var proposed_wheel_translation: Vector2 = car_direction.normalized() * utils.snap(wheel_diameter * PI * true_rpm / 60 * delta)
 	# use previous car speed to determine acceleration force demand
-	var car_forward_velocity: Vector2 = car_direction.normalized() * utils.snap(car_direction.normalized().dot(axle_movement_vec))
+	var car_forward_velocity: Vector2 = car_direction.normalized() * car_direction.normalized().dot(axle_movement_vec)
 	var acceleration_demand_vec: Vector2 = proposed_wheel_translation - car_forward_velocity
-	var acceleration_demand: float = utils.snap(acceleration_demand_vec.length() * chassis_mass)
+	var acceleration_demand: float = acceleration_demand_vec.length() * chassis_mass
 	
 	# find slip angle and use it to determine cornering force demand
 	var car_normal: Vector2 = Vector2(utils.snap(cos(car_direction.angle() + PI / 2)), utils.snap(sin(car_direction.angle() + PI / 2)))
-	var slip_motion: Vector2 = car_normal * utils.snap((axle_movement_vec).dot(car_normal))
-	var slip_distance: float = utils.snap(slip_motion.length())
-	var cornering_demand: float = utils.snap(slip_distance * chassis_mass)
+	var slip_motion: Vector2 = car_normal * (axle_movement_vec).dot(car_normal)
+	var slip_distance: float = slip_motion.length()
+	var cornering_demand: float = slip_distance * chassis_mass
 	
-	var delta_squared: float = pow(delta, 2)
+	var delta_squared: float = pow(delta, 2) # conversion factor for friction force caps
 	
 	# handle slip state changes
 	if (!slipping && sqrt(pow(acceleration_demand, 2) + pow(cornering_demand, 2)) > max_static_friction_force * delta_squared):
@@ -99,12 +99,13 @@ func get_force_output(axle_movement_vec: Vector2, car_direction: Vector2, delta:
 	var acceleration_output_vec: Vector2 # acceleration force component
 	var cornering_output_vec: Vector2 # cornering force component
 	if (slipping):
-		cornering_output_vec = slip_motion.normalized() * -1 * min(abs(cornering_demand), utils.snap(max_kinetic_friction_force * delta_squared * (1 - kinetic_friction_accel_factor)))
-		acceleration_output_vec = acceleration_demand_vec.normalized() * min(abs(acceleration_demand), utils.snap(max_kinetic_friction_force * delta_squared - cornering_output_vec.length()))
+		cornering_output_vec = slip_motion.normalized() * -1 * utils.snap(min(abs(cornering_demand), max_kinetic_friction_force * delta_squared * (1 - kinetic_friction_accel_factor)))
+		acceleration_output_vec = acceleration_demand_vec.normalized() * utils.snap(min(abs(acceleration_demand), max_kinetic_friction_force * delta_squared - cornering_output_vec.length()))
 	else:
-		cornering_output_vec = slip_motion.normalized() * -1 * abs(cornering_demand)
-		acceleration_output_vec = acceleration_demand_vec.normalized() * abs(acceleration_demand)
+		cornering_output_vec = slip_motion.normalized() * -1 * utils.snap(abs(cornering_demand))
+		acceleration_output_vec = acceleration_demand_vec.normalized() * utils.snap(abs(acceleration_demand))
 	
+	# variables for debugging
 	var _acceleration_output_force: float = acceleration_output_vec.length()
 	var _cornering_output_force: float = cornering_output_vec.length()
 	
