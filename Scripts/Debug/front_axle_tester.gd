@@ -137,18 +137,22 @@ func test_get_force_output() -> bool:
 		current_vehicle_velocity = Vector2.ZERO
 		var current_velocity_direction: float = current_vehicle_direction.angle() + front_axle.wheel_angle # current_vehicle_direction.angle() IS A PILE OF JANK. FUCK YOU!
 		var _direction_degs: float = rad_to_deg(current_velocity_direction)
-		while (current_vehicle_velocity.length() < 500.0):
+		var velocity_increment_vector: Vector2 = Vector2(cos(current_velocity_direction), sin(current_velocity_direction)) / 5
+		while (current_vehicle_velocity.length() < 194.0): # 194 meters per frame is the speed limit that our physics can handle.
+			msg = "front_axle_tester: starting no acceleration needed test at wheel angle %f and velocity %f at velocity angle %f\n" % [rad_to_deg(current_velocity_direction), current_vehicle_velocity.length(), rad_to_deg(current_vehicle_velocity.angle())]
+			# _log_file.store_string(msg)
 			var output: Vector2 = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 			if (utils.snap(output.length()) != 0.0):
 				to_ret = false
-				msg = "FAILED: front_axle no acceleration needed test (varied steering angle): get_force_output returned a non-zero acceleration value given wheel angle %f and vehicle speed %f in direction %f.\n" % [rad_to_deg(front_axle.wheel_angle), current_vehicle_velocity.length(), rad_to_deg(current_vehicle_velocity.angle())]
+				msg = "FAILED: front_axle no acceleration needed test (varied steering angle): get_force_output returned a non-zero acceleration value given wheel angle %f and vehicle speed %f in direction %f.\n" % [rad_to_deg(current_velocity_direction), current_vehicle_velocity.length(), rad_to_deg(current_vehicle_velocity.angle())]
 				printerr(msg)
 				_log_file.store_string(msg)
 				var _trace: Vector2 = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 				if (!continue_after_failing):
 					return to_ret
-			current_vehicle_velocity += Vector2(cos(current_velocity_direction) / 5, sin(current_velocity_direction) / 5)
+			current_vehicle_velocity += velocity_increment_vector
 		current_steering_angle += 0.01
+		_log_file.store_string("\n")
 	
 	# verify location and behavior of slip point (straight steering + pure normal load)
 	

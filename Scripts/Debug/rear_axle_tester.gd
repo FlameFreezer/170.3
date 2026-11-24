@@ -416,7 +416,7 @@ func test_get_force_output() -> bool:
 		var _count: int = 0
 		while (abs(utils.snap(current_vehicle_velocity.length())) < abs(utils.snap(max_static_friction_speed_change * pow(test_delta, 2)))):
 			msg = "rear_axle_tester.test_get_force_output: running test %d at angle %f\n" % [_count, rad_to_deg(curr_velocity_direction)]
-			_log_file.store_string(msg)
+			#_log_file.store_string(msg)
 			output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 			var expected_output: Vector2 = Vector2(utils.snap(current_vehicle_velocity.x * chassis_mass * -1), utils.snap(current_vehicle_velocity.y * chassis_mass * -1))
 			if output != expected_output:
