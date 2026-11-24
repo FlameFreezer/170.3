@@ -27,7 +27,6 @@ func _init(in_chassis_mass: float, static_friction_coeff: float, kinetic_frictio
 func set_wheel_angle(steer_input: float):
 	var clamped_input: float = clamp(steer_input,  -1.0, 1.0)
 	wheel_angle = deg_to_rad(max_steering_angle) * clamped_input
-	pass
 
 # ^---------- INPUT HANDLING SECTION ----------^
 
@@ -39,10 +38,15 @@ func get_force_output(axle_movement_vec: Vector2, car_direction: Vector2, delta:
 	
 	# determine wheel angle in global space
 	var global_wheel_angle: float = car_direction.angle() + wheel_angle
+	var _global_wheel_angle_degs: float = rad_to_deg(global_wheel_angle)
 	var axle_movement_angle: float = axle_movement_vec.angle()
+	
+	# apply epsilon deadzone to wheel angle differences
 	if (utils.snap(global_wheel_angle - axle_movement_angle) == 0):
 		return Vector2(0.0, 0.0)
-	var wheel_normal_vec: Vector2 = Vector2(utils.snap(cos(global_wheel_angle - PI / 2)), utils.snap(sin(global_wheel_angle - PI / 2))) # this will point to the right at steering angle 0
+	
+	var wheel_normal_vec: Vector2 = Vector2(utils.snap(cos(global_wheel_angle - PI / 2)), utils.snap(sin(global_wheel_angle - PI / 2)))
+	var _wheel_normal_degs: float = rad_to_deg(wheel_normal_vec.angle())
 	
 	# find steering force demand
 	var slip_motion: Vector2 = wheel_normal_vec * axle_movement_vec.dot(wheel_normal_vec)

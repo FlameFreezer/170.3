@@ -80,6 +80,7 @@ func test_set_wheel_angle() -> bool:
 func test_get_force_output() -> bool:
 	var msg: String
 	var to_ret: bool = true
+	var output: Vector2
 	
 	# Stationary car
 	#var car_velocity: Vector2 = Vector2.ZERO
@@ -113,7 +114,7 @@ func test_get_force_output() -> bool:
 	var current_vehicle_direction: Vector2 = Vector2.UP
 	front_axle.set_wheel_angle(0)
 	while (current_vehicle_velocity.length() < 500.0):
-		var output: Vector2 = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		output = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 		if (output.length() != 0.0):
 			to_ret = false
 			msg = "FAILED: front_axle no acceleration needed test (no steering angle): get_force_output returned a non-zero acceleration value given wheel angle %f and vehicle speed %f in direction %f.\n" % [rad_to_deg(front_axle.wheel_angle), current_vehicle_velocity.length(), rad_to_deg(current_vehicle_direction.angle())]
@@ -141,7 +142,7 @@ func test_get_force_output() -> bool:
 		while (current_vehicle_velocity.length() < 194.0): # 194 meters per frame is the speed limit that our physics can handle.
 			msg = "front_axle_tester: starting no acceleration needed test at wheel angle %f and velocity %f at velocity angle %f\n" % [rad_to_deg(current_velocity_direction), current_vehicle_velocity.length(), rad_to_deg(current_vehicle_velocity.angle())]
 			# _log_file.store_string(msg)
-			var output: Vector2 = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+			output = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
 			if (utils.snap(output.length()) != 0.0):
 				to_ret = false
 				msg = "FAILED: front_axle no acceleration needed test (varied steering angle): get_force_output returned a non-zero acceleration value given wheel angle %f and vehicle speed %f in direction %f.\n" % [rad_to_deg(current_velocity_direction), current_vehicle_velocity.length(), rad_to_deg(current_vehicle_velocity.angle())]
@@ -155,14 +156,69 @@ func test_get_force_output() -> bool:
 		_log_file.store_string("\n")
 	
 	# verify location and behavior of slip point (straight steering + pure normal load)
+	front_axle.set_wheel_angle(0)
+	current_vehicle_velocity = Vector2.ZERO
+	var max_static_friction_speed_change: float = front_axle.max_static_friction_force / front_axle.chassis_mass
+	var max_kinetic_friction_speed_change: float = front_axle.max_kinetic_friction_force / front_axle.chassis_mass
+	while (abs(current_vehicle_velocity.x) < abs(max_static_friction_speed_change * pow(test_delta, 2))):
+		output = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		var expected_force: Vector2 = Vector2(utils.snap(current_vehicle_velocity.x * front_axle.chassis_mass * -1), 0.0)
+		if (expected_force != output):
+			to_ret = false
+			msg = "FAILED: slip point location test (straight steering + pure normal load): get_force_output failed to match vehicle speed to tire motion given slip distance %f normal to the tire direction.\n" % current_vehicle_velocity.length()
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_vehicle_velocity.x -= utils.snap(0.5 * PI / 60 * test_delta)
+	output = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+	if (!front_axle.slipping):
+		to_ret = false
+		msg = "FAILED: slip point location test (straight steering + pure normal load): get_force_output failed to enter the slip state given tire slip distance %f normal to the tire direction.\n" % current_vehicle_velocity.length()
+		printerr(msg)
+		_log_file.store_string(msg)
+		if (!continue_after_failing):
+			return to_ret
+	
+	if (to_ret):
+		msg = "PASSED: slip point location test (straight steering + pure normal load)\n\n"
+		print(msg)
+		_log_file.store_string(msg)
 	
 	# verify location and behavior of catch point (straight steering + pure normal load)
+	while (abs(current_vehicle_velocity.x) > abs(max_kinetic_friction_speed_change * pow(test_delta, 2))):
+		output = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+		var expected_force: Vector2 = Vector2(utils.snap(front_axle.max_kinetic_friction_force * pow(test_delta, 2)), 0)
+		if (expected_force != output):
+			to_ret = false
+			msg = "FAILED: catch point location test (straight steering + pure normal load): get_force_output didn't output the maximum possible force while slipping given vehicle speed %f normal to the tires.\n" % current_vehicle_velocity.length()
+			printerr(msg)
+			_log_file.store_string(msg)
+			if (!continue_after_failing):
+				return to_ret
+		current_vehicle_velocity.x += utils.snap(PI / 30 * test_delta)
+	output = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
+	if (front_axle.slipping):
+		to_ret = false
+		msg = "FAILED: catch point location test (straight steering + pure normal load): get_force_output failed to exit the slip state given vehicle speed %f normal to the tires.\n" % current_vehicle_velocity.length()
+		printerr(msg)
+		_log_file.store_string(msg)
+		if (!continue_after_failing):
+			return to_ret
 	
-	# verify location and behavior of slip point (angled steering + straight forward velocity)
+	if (to_ret):
+		msg = "PASSED: catch point location test (straight steering + pure normal load)\n\n"
+		print(msg)
+		_log_file.store_string(msg)
 	
-	# verify location and behavior of catch point (angled steering + straight forward velocity)
+	# verify behavior of steering force (varying steering angle + constant forward velocity)
+	
+	
+	# verify behavior of steering force (varying steering angle + constant forward velocity)
+	
 	
 	# verify location and behavior of slip point (angled steering + non-equally angled velocity)
+	
 	
 	# verify location and behavior of catch point (angled steering + non-equally angled velocity)
 	
