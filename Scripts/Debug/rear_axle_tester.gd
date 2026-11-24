@@ -426,6 +426,7 @@ func test_get_force_output() -> bool:
 				_log_file.store_string(msg)
 				if (!continue_after_failing):
 					return to_ret
+			#var x: float = rpm_to_distance_per_frame * cos(curr_velocity_direction) * 10000
 			current_vehicle_velocity -= Vector2(utils.snap(rpm_to_distance_per_frame / 5 * cos(curr_velocity_direction)), utils.snap(rpm_to_distance_per_frame / 5 * sin(curr_velocity_direction)))
 			_count += 1
 		output = rear_axle_physics.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)

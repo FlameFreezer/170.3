@@ -18,7 +18,7 @@ static func bool_to_string(val: bool) -> StringName:
 		return "false"
 
 static func handle_epsilon(val: float) -> float:
-	if (val < EPSILON):
+	if (abs(val) < EPSILON):
 		return 0.0
 	return val
 
