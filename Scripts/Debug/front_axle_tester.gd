@@ -135,12 +135,13 @@ func test_get_force_output() -> bool:
 	while (current_steering_angle <= 1.0):
 		front_axle.set_wheel_angle(current_steering_angle)
 		current_vehicle_velocity = Vector2.ZERO
-		var current_velocity_direction: float = -PI / 2 + front_axle.wheel_angle # current_vehicle_direction.angle() IS A PILE OF JANK. FUCK YOU!
+		var current_velocity_direction: float = current_vehicle_direction.angle() + front_axle.wheel_angle # current_vehicle_direction.angle() IS A PILE OF JANK. FUCK YOU!
+		var _direction_degs: float = rad_to_deg(current_velocity_direction)
 		while (current_vehicle_velocity.length() < 500.0):
 			var output: Vector2 = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
-			if (output.length() != 0.0):
+			if (utils.snap(output.length()) != 0.0):
 				to_ret = false
-				msg = "FAILED: front_axle no acceleration needed test (varied steering angle): get_force_output returned a non-zero acceleration value given wheel angle %f and vehicle speed %f in direction %f.\n" % [rad_to_deg(front_axle.wheel_angle), current_vehicle_velocity.length(), rad_to_deg(current_velocity_direction)]
+				msg = "FAILED: front_axle no acceleration needed test (varied steering angle): get_force_output returned a non-zero acceleration value given wheel angle %f and vehicle speed %f in direction %f.\n" % [rad_to_deg(front_axle.wheel_angle), current_vehicle_velocity.length(), rad_to_deg(current_vehicle_velocity.angle())]
 				printerr(msg)
 				_log_file.store_string(msg)
 				var _trace: Vector2 = front_axle.get_force_output(current_vehicle_velocity, current_vehicle_direction, test_delta)
