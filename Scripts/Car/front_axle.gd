@@ -25,7 +25,8 @@ func _init(in_chassis_mass: float, static_friction_coeff: float, kinetic_frictio
 
 ## steer_input: in range [-1, 1]. taken from player's steering wheel input.
 func set_wheel_angle(steer_input: float):
-	wheel_angle = deg_to_rad(max_steering_angle) * steer_input
+	var clamped_input: float = clamp(steer_input,  -1.0, 1.0)
+	wheel_angle = deg_to_rad(max_steering_angle) * clamped_input
 	pass
 
 # ^---------- INPUT HANDLING SECTION ----------^
@@ -41,9 +42,9 @@ func get_force_output(axle_movement_vec: Vector2, car_direction: Vector2, delta:
 	var wheel_normal_vec: Vector2 = Vector2(utils.snap(cos(global_wheel_angle - PI / 2)), utils.snap(sin(global_wheel_angle - PI / 2))) # this will point to the right at steering angle 0
 	
 	# find steering force demand
-	var slip_motion: Vector2 = wheel_normal_vec * utils.snap(axle_movement_vec.dot(wheel_normal_vec))
-	var slip_distance: float = utils.snap(slip_motion.length())
-	var slip_demand: float = utils.snap(slip_distance * chassis_mass)
+	var slip_motion: Vector2 = wheel_normal_vec * axle_movement_vec.dot(wheel_normal_vec)
+	var slip_distance: float = slip_motion.length()
+	var slip_demand: float = slip_distance * chassis_mass
 	
 	var delta_squared = pow(delta, 2)
 	
@@ -54,12 +55,10 @@ func get_force_output(axle_movement_vec: Vector2, car_direction: Vector2, delta:
 		slipping = false;
 	
 	# cap force outputs and build return vector
-	
-	var out_steering_vec: Vector2
+	var return_vec: Vector2
 	if (slipping):
-		out_steering_vec = slip_motion.normalized() * -1 * max_kinetic_friction_force * delta_squared
+		return_vec = slip_motion.normalized() * utils.snap(-1 * max_kinetic_friction_force * delta_squared)
 	else:
-		out_steering_vec = slip_motion.normalized() * -1 * slip_demand
+		return_vec = slip_motion.normalized() * utils.snap(-1 * abs(slip_demand))
 	
-	var return_vec: Vector2 = out_steering_vec
 	return return_vec
