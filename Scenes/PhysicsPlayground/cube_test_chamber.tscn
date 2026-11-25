@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://b7h1gmr2ow33c"]
+
+[ext_resource type="PackedScene" uid="uid://ca8gy5nw13vp4" path="res://Scenes/Prefabs/floor_tile.tscn" id="1_t2w7m"]
+[ext_resource type="PackedScene" uid="uid://cklybvqinjrhw" path="res://Scenes/Prefabs/physics_test_cube.tscn" id="2_t24nl"]
+
+[node name="CubeTestChamber" type="Node3D" unique_id=333151329]
+
+[node name="FloorTile2" parent="." unique_id=1866658026 instance=ExtResource("1_t2w7m")]
+transform = Transform3D(32, 0, 0, 0, 32, 0, 0, 0, 32, 0, 0, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=721936139]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
+light_energy = 16.0
+omni_range = 64.0
+
+[node name="PhysicsTestCube" parent="." unique_id=902602728 instance=ExtResource("2_t24nl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

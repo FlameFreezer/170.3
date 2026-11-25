@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cj8p7su0y356e"]
 
-[ext_resource type="Script" uid="uid://ch58kxdecqotd" path="res://Scripts/Car/chassis.gd" id="1_0wfyh"]
-[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/Prefabs/floor_tile.tscn" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://ch58kxdecqotd" path="res://Scripts/old/Car_old/chassis.gd" id="1_bo1nx"]
+[ext_resource type="PackedScene" path="res://scenes/Prefabs/floor_tile.tscn" id="2_8gbba"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_2e8lr"]
 
@@ -17,7 +17,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3895338, 1.2053716)
 
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=782957679]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0939558, 0)
-script = ExtResource("1_0wfyh")
+script = ExtResource("1_bo1nx")
 gear_ratios = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1578132594]
@@ -26,4 +26,4 @@ shape = SubResource("SphereShape3D_2e8lr")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=1236414258]
 mesh = SubResource("SphereMesh_2e8lr")
 
-[node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("1_o5qli")]
+[node name="FloorTile" parent="." unique_id=1666266216 instance=ExtResource("2_8gbba")]

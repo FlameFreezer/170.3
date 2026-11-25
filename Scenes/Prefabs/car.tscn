@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://cqwmb2o44bhoj"]
+
+[ext_resource type="ArrayMesh" uid="uid://cqrgdna7whk3n" path="res://Assets/170_3_PH2_CarBody.obj" id="1_ie84f"]
+[ext_resource type="ArrayMesh" uid="uid://85gi517fuxsg" path="res://Assets/170_3_PH_Tire.obj" id="2_j1c4f"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ie84f"]
+albedo_color = Color(0.7137255, 0.11372549, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j1c4f"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wsei3"]
+albedo_color = Color(1, 1, 0.36862746, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fdihc"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dqr88"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_27pcf"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y4dxt"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oajxw"]
+size = Vector3(2, 1.75, 5.25)
+
+[node name="Car" type="CharacterBody3D" unique_id=1999821772]
+
+[node name="1703Ph2CarBody" type="MeshInstance3D" parent="." unique_id=520564267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = ExtResource("1_ie84f")
+surface_material_override/0 = SubResource("StandardMaterial3D_ie84f")
+surface_material_override/1 = SubResource("StandardMaterial3D_j1c4f")
+surface_material_override/2 = SubResource("StandardMaterial3D_wsei3")
+surface_material_override/3 = SubResource("StandardMaterial3D_wsei3")
+
+[node name="1703PhTire" type="MeshInstance3D" parent="." unique_id=1308901886]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0, 0)
+mesh = ExtResource("2_j1c4f")
+surface_material_override/0 = SubResource("StandardMaterial3D_fdihc")
+
+[node name="1703PhTire2" type="MeshInstance3D" parent="." unique_id=285206203]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0, 0)
+mesh = ExtResource("2_j1c4f")
+surface_material_override/0 = SubResource("StandardMaterial3D_dqr88")
+
+[node name="1703PhTire3" type="MeshInstance3D" parent="." unique_id=1998204076]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, -1, -0.25, 0, -1)
+mesh = ExtResource("2_j1c4f")
+surface_material_override/0 = SubResource("StandardMaterial3D_27pcf")
+
+[node name="1703PhTire4" type="MeshInstance3D" parent="." unique_id=1743464492]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.25, 0, -1)
+mesh = ExtResource("2_j1c4f")
+surface_material_override/0 = SubResource("StandardMaterial3D_y4dxt")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=243289236]
+transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0, 5, 9)
+current = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2056434777]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, -0.3)
+shape = SubResource("BoxShape3D_oajxw")
