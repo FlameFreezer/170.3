@@ -1,7 +1,7 @@
 extends CharacterBody3D
 signal update_values(String)
 
-@export_category("Engine")
+@export_category("Car Engine")
 ## Amount of acceleleration to apply from the throttle
 @export var throttle_force: float
 @export var max_engine_rpm: float
@@ -14,8 +14,12 @@ signal update_values(String)
 ## Max static friction force that can be applied
 @export var static_friction_force: float
 @export var kinetic_friction_force: float
-@export_category("General motion")
 @export var gear_ratios: Array[float]
+@export_category("Steering")
+## Time to steer from 0 degrees to the maximum value in seconds
+@export var steer_time: float
+## Highest angle the wheels can be turned to in degrees
+@export var max_steering_angle: float
 
 var _throttle_state: float = 0.0
 var _wheel_rpm: float = 0.0
@@ -23,6 +27,8 @@ var _engine_rpm: float = 0.0
 var _handbrake_state: float = 0.0
 var _current_gear_ratio_index: int = 2
 var _is_slipping: bool = false
+var _steer_angle: float = 0.0
+var _steer_input: float = 0.0
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -30,13 +36,15 @@ func _physics_process(delta: float) -> void:
 	
 	read_input()
 	
+	turn_wheels(delta)
+	
 	simulate_engine(delta)
 	
 	determine_slip_state()
 	
 	accelerate_car()
 	
-	update_values.emit("Velocity: %v\nWheel RPM: %f\nGear Ratio Index: %d\nEngine RPM: %f\nSlipping: %s" % [velocity, _wheel_rpm, _current_gear_ratio_index, _engine_rpm, utils.bool_to_string(_is_slipping)])
+	update_values.emit("Velocity: %v\nWheel RPM: %f\nGear Ratio Index: %d\nEngine RPM: %f\nSlipping: %s\nSteer Angle: %f" % [velocity, _wheel_rpm, _current_gear_ratio_index, _engine_rpm, utils.bool_to_string(_is_slipping), _steer_angle])
 	
 	move_and_slide()
 
@@ -54,6 +62,7 @@ func get_forward_velocity() -> Vector3:
 
 func get_wheel_translation() -> float:
 	return wheel_diameter * PI * _wheel_rpm
+
 func read_input() -> void:
 	if Input.is_action_pressed("throttle"):
 		_throttle_state = 1.0
@@ -69,6 +78,9 @@ func read_input() -> void:
 		change_gear_ratio(1)
 	if Input.is_action_just_pressed("downshift"):
 		change_gear_ratio(-1)
+	
+	_steer_input = float(Input.is_action_pressed("steer left")) - float(Input.is_action_pressed("steer right"))
+		
 
 func simulate_engine(delta: float) -> void:
 	# Apply throttle to the engine
@@ -81,6 +93,13 @@ func simulate_engine(delta: float) -> void:
 		_wheel_rpm = _engine_rpm / get_gear_ratio()
 	# Spindown wheel rpm
 	_wheel_rpm = move_toward(_wheel_rpm, 0.0, (wheel_spindown_rate + _handbrake_state * handbrake_power) * delta)
+
+func turn_wheels(delta: float) -> void:
+	if _steer_input != 0.0:
+		_steer_angle = move_toward(_steer_angle, max_steering_angle * _steer_input, delta / steer_time * max_steering_angle)
+	# Make it easier to land the angle at 0
+	elif abs(_steer_angle) <= 5.0:
+		_steer_angle = 0.0
 
 func determine_slip_state() -> void:
 	# Determine if wheels are slipping
@@ -97,4 +116,12 @@ func accelerate_car() -> void:
 		accel_impact = get_wheel_translation() * get_forward() - get_forward_velocity()
 	else:
 		accel_impact = -kinetic_friction_force * velocity.normalized()
+	accel_impact += get_turning_force()
 	velocity += accel_impact
+
+func get_turning_force() -> Vector3:
+	var front_wheel_normal: Vector3 = get_forward().rotated(Vector3.UP, deg_to_rad(_steer_angle) - PI / 2.0)
+	var cornering: Vector3 = -front_wheel_normal * get_forward_velocity().dot(front_wheel_normal) * 0.025
+	if cornering.length() < utils.EPSILON:
+		cornering = Vector3.ZERO
+	return cornering
