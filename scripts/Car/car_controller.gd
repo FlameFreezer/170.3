@@ -87,7 +87,7 @@ func simulate_engine(delta: float) -> void:
 	_engine_rpm = move_toward(_engine_rpm, max_engine_rpm, _throttle_state * throttle_force * delta)
 	# Spindown the engine if throttle is not in
 	if _throttle_state == 0.0:
-		_engine_rpm = move_toward(_engine_rpm, 0.0, (engine_spindown_rate + _handbrake_state * handbrake_power * get_gear_ratio()) * delta)
+		_engine_rpm = move_toward(_engine_rpm, 0.0, (engine_spindown_rate + _handbrake_state * handbrake_power * abs(get_gear_ratio())) * delta)
 	# Set wheel rpm to ratio of engine rpm
 	if _handbrake_state == 0.0:
 		_wheel_rpm = _engine_rpm / get_gear_ratio()
