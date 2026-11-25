@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ttymonj8wi7b"]
 
-[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/Prefabs/floor_tile.tscn" id="1_4mfdp"]
-[ext_resource type="PackedScene" uid="uid://bkx6w4rf3e4w0" path="res://scenes/Prefabs/PHCar.tscn" id="2_ivdt8"]
+[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://Scenes/Prefabs/floor_tile.tscn" id="1_4mfdp"]
+[ext_resource type="PackedScene" uid="uid://bkx6w4rf3e4w0" path="res://Scenes/Prefabs/PHCar.tscn" id="2_ivdt8"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4mfdp"]
 friction = 0.0

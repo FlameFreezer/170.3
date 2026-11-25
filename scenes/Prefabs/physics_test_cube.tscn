@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b8ymt0hb786jy"]
 
-[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://scenes/Prefabs/floor_tile.tscn" id="1_4d7ev"]
+[ext_resource type="PackedScene" uid="uid://ccvhph1gnwwti" path="res://Scenes/Prefabs/floor_tile.tscn" id="1_4d7ev"]
 [ext_resource type="Script" uid="uid://cvno8qawyjit7" path="res://Scripts/Debug/physics_test_cube.gd" id="2_uxq8a"]
 [ext_resource type="Script" uid="uid://dgjem74wjcuun" path="res://Scripts/UI/physics_cube_hud_txt.gd" id="3_w00ii"]
 

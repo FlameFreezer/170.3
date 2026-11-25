@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://bkx6w4rf3e4w0"]
 
-[ext_resource type="Script" uid="uid://bjgv2hp14gx7d" path="res://scripts/Car/car_controller.gd" id="1_0ixyv"]
-[ext_resource type="ArrayMesh" uid="uid://cqrgdna7whk3n" path="res://Assets/170_3_PH2_CarBody.obj" id="1_py02g"]
-[ext_resource type="ArrayMesh" uid="uid://85gi517fuxsg" path="res://Assets/170_3_PH_Tire.obj" id="2_8ty4o"]
-[ext_resource type="Script" uid="uid://nfmh3d52fr6m" path="res://scripts/UI/hud_txt.gd" id="4_0ixyv"]
+[ext_resource type="Script" uid="uid://bjgv2hp14gx7d" path="res://Scripts/Car/car_controller.gd" id="1_k76lb"]
+[ext_resource type="ArrayMesh" uid="uid://cqrgdna7whk3n" path="res://Assets/170_3_PH2_CarBody.obj" id="2_gq2uh"]
+[ext_resource type="ArrayMesh" uid="uid://85gi517fuxsg" path="res://Assets/170_3_PH_Tire.obj" id="3_3x6i3"]
+[ext_resource type="Script" uid="uid://nfmh3d52fr6m" path="res://Scripts/UI/hud_txt.gd" id="4_844b2"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_oajxw"]
 size = Vector3(2, 1, 5)
@@ -24,7 +24,7 @@ albedo_color = Color(0, 0, 0, 1)
 albedo_color = Color(0, 0, 0, 1)
 
 [node name="PHCar" type="CharacterBody3D" unique_id=88021085]
-script = ExtResource("1_0ixyv")
+script = ExtResource("1_k76lb")
 throttle_force = 500.0
 max_engine_rpm = 10000.0
 engine_spindown_rate = 500.0
@@ -42,27 +42,27 @@ shape = SubResource("BoxShape3D_oajxw")
 
 [node name="1703Ph2CarBody" type="MeshInstance3D" parent="." unique_id=1837564033]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.49327415, 0.29302418)
-mesh = ExtResource("1_py02g")
+mesh = ExtResource("2_gq2uh")
 surface_material_override/0 = SubResource("StandardMaterial3D_0wfyh")
 
 [node name="1703PhTireFrontLeft" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=367701499]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.255, 0, -2.5)
-mesh = ExtResource("2_8ty4o")
+mesh = ExtResource("3_3x6i3")
 surface_material_override/0 = SubResource("StandardMaterial3D_ynk2d")
 
 [node name="1703PhTireFrontRight" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=1727197525]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, -2.5)
-mesh = ExtResource("2_8ty4o")
+mesh = ExtResource("3_3x6i3")
 surface_material_override/0 = SubResource("StandardMaterial3D_1a7xp")
 
 [node name="1703PhTireBackLeft" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=318854468]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.255, 0, 0)
-mesh = ExtResource("2_8ty4o")
+mesh = ExtResource("3_3x6i3")
 surface_material_override/0 = SubResource("StandardMaterial3D_xf787")
 
 [node name="1703PhTireBackRight" type="MeshInstance3D" parent="1703Ph2CarBody" unique_id=846160020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, 0)
-mesh = ExtResource("2_8ty4o")
+mesh = ExtResource("3_3x6i3")
 surface_material_override/0 = SubResource("StandardMaterial3D_caoin")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=952696114]
@@ -79,7 +79,7 @@ offset_bottom = 40.0
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
-script = ExtResource("4_0ixyv")
+script = ExtResource("4_844b2")
 
 [node name="1703RearAxlePos" type="Node3D" parent="." unique_id=1459796571]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)
