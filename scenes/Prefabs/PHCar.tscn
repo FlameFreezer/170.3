@@ -25,12 +25,12 @@ albedo_color = Color(0, 0, 0, 1)
 
 [node name="PHCar" type="CharacterBody3D" unique_id=88021085]
 script = ExtResource("1_k76lb")
-throttle_force = 500.0
-max_engine_rpm = 10000.0
-engine_spindown_rate = 500.0
+throttle_force = 15000.0
+max_engine_rpm = 100000.0
+engine_spindown_rate = 10000.0
 wheel_diameter = 0.5
-wheel_spindown_rate = 1.0
-handbrake_power = 100.0
+wheel_spindown_rate = 100.0
+handbrake_power = 1000.0
 static_friction_force = 1000.0
 kinetic_friction_force = 250.0
 gear_ratios = Array[float]([-50.0, -100.0, 100.0, 50.0, 25.0, 10.0])
@@ -64,10 +64,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_xf787")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, 0)
 mesh = ExtResource("3_3x6i3")
 surface_material_override/0 = SubResource("StandardMaterial3D_caoin")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=952696114]
-transform = Transform3D(1, 0, 0, 0, 0.7606997, 0.64910406, 0, -0.64910406, 0.7606997, 0, 4.331213, 4.5360284)
-current = true
 
 [node name="HUD" type="Control" parent="." unique_id=594348716]
 layout_mode = 3

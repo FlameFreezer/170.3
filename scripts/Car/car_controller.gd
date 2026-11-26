@@ -29,6 +29,28 @@ var _current_gear_ratio_index: int = 2
 var _is_slipping: bool = false
 var _steer_angle: float = 0.0
 var _steer_input: float = 0.0
+@onready var front_axle_pos_node: Node3D = $"1703FrontAxlePos"
+@onready var rear_axle_pos_node: Node3D = $"1703RearAxlePos"
+@onready var collision_shape: BoxShape3D = $CollisionShape3D.shape
+var rear_axle_velocity: Vector3 = Vector3.ZERO
+var front_axle_velocity: Vector3 = Vector3.ZERO
+var rear_axle_pos: Vector3
+var front_axle_pos: Vector3
+## Assuming the axles are aligned with the center of mass, the center of mass is located this distance between them
+var center_weight: float = 0.0
+
+func _ready() -> void:
+	front_axle_pos = front_axle_pos_node.global_position
+	rear_axle_pos = rear_axle_pos_node.global_position
+	if rear_axle_pos != front_axle_pos:
+		var weights: Vector3 = (global_position - rear_axle_pos) / (front_axle_pos - rear_axle_pos)
+		if !is_nan(weights.x):
+			center_weight = weights.x
+		elif !is_nan(weights.y):
+			center_weight = weights.y
+		else:
+			center_weight = weights.z
+	
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -42,9 +64,9 @@ func _physics_process(delta: float) -> void:
 	
 	determine_slip_state()
 	
-	accelerate_car()
+	accelerate_car(delta)
 	
-	update_values.emit("Velocity: %v\nWheel RPM: %f\nGear Ratio Index: %d\nEngine RPM: %f\nSlipping: %s\nSteer Angle: %f" % [velocity, _wheel_rpm, _current_gear_ratio_index, _engine_rpm, utils.bool_to_string(_is_slipping), _steer_angle])
+	update_values.emit("Velocity: %v\nWheel RPM: %f\nGear Ratio Index: %d\nEngine RPM: %f\nSlipping: %s\nSteer Angle: %f\nFront Axle Velocity: %v\nRear Axle Velocity: %v\nFront Axle Position: %v\nRear Axle Position: %v" % [velocity, _wheel_rpm, _current_gear_ratio_index, _engine_rpm, utils.bool_to_string(_is_slipping), _steer_angle, front_axle_velocity, rear_axle_velocity, front_axle_pos, rear_axle_pos])
 	
 	move_and_slide()
 
@@ -55,13 +77,14 @@ func get_gear_ratio() -> float:
 	return gear_ratios[_current_gear_ratio_index]
 
 func get_forward() -> Vector3:
-	return transform.basis * Vector3.FORWARD
+	return global_basis * Vector3.FORWARD
 
 func get_forward_velocity() -> Vector3:
 	return get_forward() * velocity.dot(get_forward())
 
+## Get the translational speed of the rear wheels in meters per second
 func get_wheel_translation() -> float:
-	return wheel_diameter * PI * _wheel_rpm
+	return wheel_diameter * PI * _wheel_rpm / 60.0
 
 func read_input() -> void:
 	if Input.is_action_pressed("throttle"):
@@ -109,19 +132,46 @@ func determine_slip_state() -> void:
 	elif _is_slipping and abs(wheel_translation) < kinetic_friction_force:
 		_is_slipping = false
 
-func accelerate_car() -> void:
-	# Affect acceleration by slip state
-	var accel_impact: Vector3
-	if !_is_slipping:
-		accel_impact = get_wheel_translation() * get_forward() - get_forward_velocity()
-	else:
-		accel_impact = -kinetic_friction_force * velocity.normalized()
-	accel_impact += get_turning_force()
-	velocity += accel_impact
+func accelerate_car(delta: float) -> void:
+	var rear_force: Vector3 = get_rear_force()
+	rear_axle_velocity += rear_force
+	rear_axle_pos += rear_axle_velocity * delta
+	
+	var front_force: Vector3 = get_front_force()
+	front_axle_velocity += front_force + rear_force.project(get_forward())
+	var last_front_axle_pos: Vector3 = front_axle_pos
+	front_axle_pos += front_axle_velocity * delta
+	
+	var new_car_pos: Vector3 = rear_axle_pos.lerp(front_axle_pos, center_weight)
+	velocity = (new_car_pos - global_position) / delta
+	var rotation_vec: Vector3 = last_front_axle_pos.cross(front_axle_pos)
+	if rotation_vec.length() != 0:
+		quaternion += Quaternion(rotation_vec.normalized(), asin(rotation_vec.length() / last_front_axle_pos.length() / front_axle_pos.length()))
 
-func get_turning_force() -> Vector3:
-	var front_wheel_normal: Vector3 = get_forward().rotated(Vector3.UP, deg_to_rad(_steer_angle) - PI / 2.0)
-	var cornering: Vector3 = -front_wheel_normal * get_forward_velocity().dot(front_wheel_normal) * 0.025
+func get_front_force() -> Vector3:
+	var front_wheel_normal: Vector3 = get_forward().rotated(Vector3.UP, deg_to_rad(_steer_angle - 90.0))
+	var cornering: Vector3 = -front_wheel_normal * front_axle_velocity.dot(front_wheel_normal)
 	if cornering.length() < utils.EPSILON:
 		cornering = Vector3.ZERO
 	return cornering
+
+func get_rear_force() -> Vector3:
+	var rear_force: Vector3
+	if !_is_slipping:
+		rear_force = get_wheel_translation() * get_forward() - rear_axle_velocity.project(get_forward())
+	else:
+		rear_force = -kinetic_friction_force * rear_axle_velocity.normalized()
+	var wheel_normal: Vector3 = get_forward().rotated(Vector3.UP, deg_to_rad(-90))
+	var slip_velocity: Vector3 = rear_axle_velocity.project(wheel_normal)
+	if slip_velocity.length() < utils.EPSILON:
+		slip_velocity = Vector3.ZERO
+	rear_force -= slip_velocity
+	return rear_force
+
+func apply_force(force: Vector3, pos: Vector3) -> void:
+	pass
+	#var point_of_application: Vector3 = pos - global_position
+	#var velocity_change: Vector3 = force
+	#var angular_velocity_change: Vector3 = force.cross(point_of_application) * 12.0 / (collision_shape.size.y * collision_shape.size.y + collision_shape.size.x * collision_shape.size.x)
+	#velocity += velocity_change
+	#angular_velocity += angular_velocity_change

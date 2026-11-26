@@ -57,3 +57,6 @@ mesh = SubResource("BoxMesh_oajxw")
 
 [node name="PHCar" parent="." unique_id=88021085 instance=ExtResource("2_ivdt8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1156666, 0)
+
+[node name="Camera3D" type="Camera3D" parent="PHCar" unique_id=445791159]
+transform = Transform3D(1, 0, 0, 0, 0.84460366, 0.5353921, 0, -0.5353921, 0.84460366, 0, 3.3226812, 4.9698935)
