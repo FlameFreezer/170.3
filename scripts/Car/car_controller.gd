@@ -31,6 +31,10 @@ var _is_slipping: bool = false
 var _steer_angle: float = 0.0
 var _steer_input: float = 0.0
 
+func _ready() -> void:
+	pass
+	#velocity.x = -150.0
+
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -44,6 +48,8 @@ func _physics_process(delta: float) -> void:
 	determine_slip_state()
 	
 	accelerate_car()
+	
+	steer_car(delta)
 	
 	update_values.emit("Velocity: %v\nWheel RPM: %f\nGear Ratio Index: %d\nEngine RPM: %f\nSlipping: %s\nSteer Angle: %f" % [velocity, _wheel_rpm, _current_gear_ratio_index, _engine_rpm, utils.bool_to_string(_is_slipping), _steer_angle])
 	
@@ -103,7 +109,8 @@ func turn_wheels(delta: float) -> void:
 		_steer_angle = 0.0
 
 func determine_slip_state() -> void:
-	pass
+	# Slipping disabled for now
+	_is_slipping = false
 	# Determine if wheels are slipping
 	#if !_is_slipping and abs(_wheel_rpm) > max_wheel_rpm:
 		#_is_slipping = true
@@ -117,12 +124,12 @@ func accelerate_car() -> void:
 		accel_impact = get_wheel_translation() * get_forward() - get_forward_velocity()
 	else:
 		accel_impact = -kinetic_friction_force * velocity.normalized()
-	accel_impact += get_turning_force()
+	# Friction
+	var horizontal: Vector3 = get_forward().rotated(Vector3.UP, deg_to_rad(-90))
+	var slip_motion: Vector3 = velocity.project(horizontal)
+	accel_impact += -slip_motion
 	velocity += accel_impact
-
-func get_turning_force() -> Vector3:
-	var front_wheel_normal: Vector3 = get_forward().rotated(Vector3.UP, deg_to_rad(_steer_angle - 90))
-	var cornering: Vector3 = -front_wheel_normal * get_forward_velocity().dot(front_wheel_normal)
-	if cornering.length() < utils.EPSILON:
-		cornering = Vector3.ZERO
-	return cornering
+	
+func steer_car(delta: float) -> void:
+	if velocity.length_squared() > 0.0:
+		rotation_degrees.y += _steer_angle * delta * 1.75
