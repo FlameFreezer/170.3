@@ -15,6 +15,7 @@ signal update_values(String)
 @export var static_friction_force: float
 @export var kinetic_friction_force: float
 @export var gear_ratios: Array[float]
+@export var max_wheel_rpm: float
 @export_category("Steering")
 ## Time to steer from 0 degrees to the maximum value in seconds
 @export var steer_time: float
@@ -61,7 +62,7 @@ func get_forward_velocity() -> Vector3:
 	return get_forward() * velocity.dot(get_forward())
 
 func get_wheel_translation() -> float:
-	return wheel_diameter * PI * _wheel_rpm
+	return wheel_diameter * PI * _wheel_rpm / 60.0
 
 func read_input() -> void:
 	if Input.is_action_pressed("throttle"):
@@ -102,12 +103,12 @@ func turn_wheels(delta: float) -> void:
 		_steer_angle = 0.0
 
 func determine_slip_state() -> void:
+	pass
 	# Determine if wheels are slipping
-	var wheel_translation: float = get_wheel_translation()
-	if !_is_slipping and abs(wheel_translation) > static_friction_force:
-		_is_slipping = true
-	elif _is_slipping and abs(wheel_translation) < kinetic_friction_force:
-		_is_slipping = false
+	#if !_is_slipping and abs(_wheel_rpm) > max_wheel_rpm:
+		#_is_slipping = true
+	#elif _is_slipping and abs(_wheel_rpm) < kinetic_friction_force:
+		#_is_slipping = false
 
 func accelerate_car() -> void:
 	# Affect acceleration by slip state
@@ -120,8 +121,8 @@ func accelerate_car() -> void:
 	velocity += accel_impact
 
 func get_turning_force() -> Vector3:
-	var front_wheel_normal: Vector3 = get_forward().rotated(Vector3.UP, deg_to_rad(_steer_angle) - PI / 2.0)
-	var cornering: Vector3 = -front_wheel_normal * get_forward_velocity().dot(front_wheel_normal) * 0.025
+	var front_wheel_normal: Vector3 = get_forward().rotated(Vector3.UP, deg_to_rad(_steer_angle - 90))
+	var cornering: Vector3 = -front_wheel_normal * get_forward_velocity().dot(front_wheel_normal)
 	if cornering.length() < utils.EPSILON:
 		cornering = Vector3.ZERO
 	return cornering
